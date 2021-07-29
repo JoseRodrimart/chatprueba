@@ -1,5 +1,6 @@
 package com.jose.chatprueba.services;
 
+import com.jose.chatprueba.models.Chat;
 import com.jose.chatprueba.models.Mensaje;
 import java.util.List;
 import java.util.Optional;

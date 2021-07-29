@@ -2,6 +2,7 @@ package com.jose.chatprueba.services;
 
 import com.jose.chatprueba.models.Chat;
 import com.jose.chatprueba.models.Mensaje;
+import com.jose.chatprueba.models.Usuario;
 import com.jose.chatprueba.repositories.MensajeRepository;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,10 @@ public class MensajeServices implements IServices<Mensaje>, IMensajeServices{
 
     //Metodos comunes a los servicios
     @Override
+    public boolean compruebaPorId(Integer id) {
+        return mensajeRepository.existsById(id);
+    }
+    @Override
     public List<Mensaje> buscaTodos(){
         return mensajeRepository.findAll();
     }
@@ -31,8 +36,18 @@ public class MensajeServices implements IServices<Mensaje>, IMensajeServices{
         return mensajeRepository.findById(id);
     }
     @Override
-    public void registra(Mensaje ... mensajes) {
-        Arrays.stream(mensajes).forEach(mensajeRepository::save);
+    public boolean registra(Mensaje ... mensajes) {
+        try{
+            Arrays.stream(mensajes).forEach(mensajeRepository::save);
+            return true;
+        }catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    @Override
+    public Mensaje registra(Mensaje mensaje) {
+        return mensajeRepository.save(mensaje);
     }
     @Override
     public void elimina(Mensaje mensaje) {

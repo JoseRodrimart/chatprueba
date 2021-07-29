@@ -12,4 +12,5 @@ public interface IChatServices {
     public boolean registraUsuariosEnChat(Integer id_chat, Integer ... id_usuario);
     public boolean creaChat(Integer ... id_usuario);
     public Map<Integer,Integer> chatsConMensajesSinLeer(Integer id_usuario);
+    Optional<List<Chat>> buscaPorEmail(String email);
 }

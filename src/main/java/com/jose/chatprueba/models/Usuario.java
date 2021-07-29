@@ -1,5 +1,6 @@
 package com.jose.chatprueba.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
@@ -18,8 +19,10 @@ public class Usuario {
     private String pass;
     @Column(name="mail")
     private String mail;
+    @JsonIgnore
     @ManyToMany(/*cascade = { CascadeType.ALL },*/fetch = FetchType.LAZY, mappedBy = "usuarios")
     private Set<Chat> chats;
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, /*cascade = CascadeType.ALL ,*/ mappedBy = "usuario")
     private List<Mensaje> mensajes;
 

@@ -1,5 +1,6 @@
 package com.jose.chatprueba.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import javax.persistence.*;
 import java.util.Date;
@@ -20,6 +21,7 @@ public class Mensaje {
     @ManyToOne
     @JoinColumn(name="id_usuario")
     private Usuario usuario;
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="id_chat")
     private Chat chat;

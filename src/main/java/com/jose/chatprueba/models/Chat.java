@@ -1,5 +1,6 @@
 package com.jose.chatprueba.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import javax.persistence.*;
 import java.util.*;
@@ -13,6 +14,7 @@ public class Chat {
     private int id;
     @Column(name="fecha")
     private Date fecha;
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(
             name="participantes_chat",
@@ -20,6 +22,7 @@ public class Chat {
             inverseJoinColumns = @JoinColumn(name = "id_usuario")
     )
     private Set<Usuario> usuarios;
+    @JsonIgnore
     @OneToMany(mappedBy = "chat")
     private List<Mensaje> mensajes;
 

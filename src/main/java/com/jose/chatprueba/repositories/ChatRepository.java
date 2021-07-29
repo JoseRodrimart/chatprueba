@@ -23,4 +23,7 @@ public interface ChatRepository extends JpaRepository<Chat, Integer> {
 
     @Query("Select c from Chat c join c.usuarios cu where cu.id=:id_usuario")
     Optional<List<Chat>> buscaPorUsuario(@Param("id_usuario") Integer id_usuario);
+    @Query("Select uc from Usuario u join u.chats uc where u.mail=:email")
+    Optional<List<Chat>> buscaPorEmail(@Param("email") String email);
+
 }

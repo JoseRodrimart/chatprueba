@@ -1,7 +1,5 @@
 package com.jose.chatprueba.services;
 
-import com.jose.chatprueba.models.Chat;
-import com.jose.chatprueba.models.Mensaje;
 import com.jose.chatprueba.models.Usuario;
 import com.jose.chatprueba.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +18,10 @@ public class UsuarioServices implements IServices<Usuario>, IUsuarioServices{
 
     //Metodos comunes de los servicios
     @Override
+    public boolean compruebaPorId(Integer id) {
+        return usuarioRepository.existsById(id);
+    }
+    @Override
     public List<Usuario> buscaTodos(){
         return usuarioRepository.findAll();
     }
@@ -28,8 +30,18 @@ public class UsuarioServices implements IServices<Usuario>, IUsuarioServices{
         return usuarioRepository.findById(id);
     }
     @Override
-    public void registra(Usuario ... usuarios) {
-        Arrays.stream(usuarios).forEach(usuarioRepository::save);
+    public boolean registra(Usuario ... usuarios) {
+        try {
+            Arrays.stream(usuarios).forEach(usuarioRepository::save);
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+    @Override
+    public Usuario registra(Usuario usuario) {
+        return usuarioRepository.save(usuario);
     }
     @Override
     public void elimina(Usuario usuario) {

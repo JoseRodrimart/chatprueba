@@ -1,6 +1,7 @@
 package com.jose.chatprueba.services;
 
 import com.jose.chatprueba.models.Chat;
+import com.jose.chatprueba.models.Usuario;
 import com.jose.chatprueba.repositories.ChatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,11 @@ public class ChatServices implements IServices<Chat> , IChatServices{
     UsuarioServices usuarioServices;
 
     //Funciones comunes a los servicios
+
+    @Override
+    public boolean compruebaPorId(Integer id) {
+        return chatRepository.existsById(id);
+    }
     @Override
     public List<Chat> buscaTodos(){
         return chatRepository.findAll();
@@ -27,8 +33,18 @@ public class ChatServices implements IServices<Chat> , IChatServices{
         return chatRepository.findById(id);
     }
     @Override
-    public void registra(Chat ... chat) {
-        Arrays.stream(chat).forEach(chatRepository::save);
+    public Chat registra(Chat chat){
+        return chatRepository.save(chat);
+    }
+    @Override
+    public boolean registra(Chat ... chat) {
+        try{
+            Arrays.stream(chat).forEach(chatRepository::save);
+            return true;
+        }catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
     @Override
     public void elimina(Chat chat) {
@@ -77,6 +93,11 @@ public class ChatServices implements IServices<Chat> , IChatServices{
         });
         System.out.println("");
         return map;
+    }
+
+    @Override
+    public Optional<List<Chat>> buscaPorEmail(String email) {
+        return chatRepository.buscaPorEmail(email);
     }
 
 }

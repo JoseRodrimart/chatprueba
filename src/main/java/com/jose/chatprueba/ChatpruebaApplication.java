@@ -3,6 +3,7 @@ package com.jose.chatprueba;
 import com.jose.chatprueba.services.ChatServices;
 import com.jose.chatprueba.services.MensajeServices;
 import com.jose.chatprueba.services.UsuarioServices;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -20,6 +21,10 @@ public class ChatpruebaApplication {
         SpringApplication.run(ChatpruebaApplication.class, args);
     }
 
+    @Bean
+    public ModelMapper modelMapper(){
+        return new ModelMapper();
+    }
     //Ejecución del main
     @PersistenceContext
     EntityManager entityManager;

@@ -1,5 +1,7 @@
 package com.jose.chatprueba.services;
 
+import com.jose.chatprueba.dto.UsuarioDTO;
+import com.jose.chatprueba.dto.converter.UsuarioDTOConverter;
 import com.jose.chatprueba.models.Usuario;
 import com.jose.chatprueba.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,13 +10,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
-
 public class UsuarioServices implements IServices<Usuario>, IUsuarioServices{
     @Autowired
     UsuarioRepository usuarioRepository;
+    @Autowired
+    UsuarioDTOConverter usuarioDTOConverter;
 
     //Metodos comunes de los servicios
     @Override
@@ -53,6 +57,11 @@ public class UsuarioServices implements IServices<Usuario>, IUsuarioServices{
     }
 
     //Metodos propios de IUsusarioServices
+    public List<UsuarioDTO> buscaTodosDTO(){
+        List<Usuario> usuarios = usuarioRepository.buscaTodosDTO();
+        List<UsuarioDTO> listaDTO = usuarios.stream().map(usuarioDTOConverter::convertToDTO).collect(Collectors.toList());
+        return listaDTO;
+    }
     @Override
     public Usuario buscaPorEmail(String email) {
         return usuarioRepository.buscaPorEmailCompleto(email);

@@ -1,11 +1,13 @@
 package com.jose.chatprueba.repositories;
 
+import com.jose.chatprueba.dto.UsuarioDTO;
 import com.jose.chatprueba.models.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -21,4 +23,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
             "where a.mail = :email " +
             "and c.id <> a.id")
     Usuario buscaPorEmailCompleto(@Param("email") String email);
+
+    @Query("select new com.jose.chatprueba.models.Usuario(u.nombre, u.mail) from Usuario u")
+    List<Usuario> buscaTodosDTO();
 }

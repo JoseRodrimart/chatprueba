@@ -19,6 +19,8 @@ public class Usuario {
     private String pass;
     @Column(name="mail")
     private String mail;
+    @Column(name="imagen")
+    private String imagen;
     @JsonIgnore
     @ManyToMany(/*cascade = { CascadeType.ALL },*/fetch = FetchType.LAZY, mappedBy = "usuarios")
     private Set<Chat> chats;
@@ -29,6 +31,11 @@ public class Usuario {
     public Usuario(String nombre, String pass, String mail) {
         this.nombre = nombre;
         this.pass = pass;
+        this.mail = mail;
+    }
+
+    public Usuario(String nombre, String mail){
+        this.nombre = nombre;
         this.mail = mail;
     }
 

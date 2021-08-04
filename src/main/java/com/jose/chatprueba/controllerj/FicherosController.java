@@ -1,45 +1,41 @@
 package com.jose.chatprueba.controllerj;
 
 import java.io.IOException;
+import java.nio.file.Files;
 
-import javax.servlet.http.HttpServletRequest;
 
-import com.jose.chatprueba.upload.StorageService;
+import com.jose.chatprueba.services.IFicheroServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class FicherosController {
 
-    private static final Logger logger = LoggerFactory.getLogger(FicherosController.class);
+    //private static final Logger logger = LoggerFactory.getLogger(FicherosController.class);
 
-    private final StorageService storageService;
+    private final IFicheroServices IFicherosServicio;
 
     @GetMapping(value="/files/{filename:.+}")
-    @ResponseBody
-    public ResponseEntity<Resource> serveFile(@PathVariable String filename, HttpServletRequest request) {
-        Resource file = storageService.loadAsResource(filename);
-
+    public ResponseEntity<Resource> serveFile(
+            @PathVariable String filename) {
+        Resource file = IFicherosServicio.loadAsResource(filename);
         String contentType = null;
         try {
-            contentType = request.getServletContext().getMimeType(file.getFile().getAbsolutePath());
+            contentType = Files.probeContentType(file.getFile().toPath());
         } catch (IOException ex) {
-            logger.info("Could not determine file type.");
+            System.err.println("Ha habido un error determinando el tipo del fichero");
         }
 
-        if(contentType == null) {
-            contentType = "application/octet-stream";
-        }
+        if(contentType == null) contentType = "application/octet-stream";
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))

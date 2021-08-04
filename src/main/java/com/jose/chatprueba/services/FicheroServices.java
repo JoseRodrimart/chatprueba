@@ -1,4 +1,4 @@
-package com.jose.chatprueba.upload;
+package com.jose.chatprueba.services;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,14 +20,14 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-public class FileSystemStorageService implements StorageService{
+public class FicheroServices implements IFicheroServices {
 
     // Directorio raiz de nuestro almacén de ficheros
 
     private final Path rootLocation;
 
 
-    public FileSystemStorageService(@Value("${upload.root-location}") String path) {
+    public FicheroServices(@Value("${upload.root-location}") String path) {
         this.rootLocation = Paths.get(path);
     }
 

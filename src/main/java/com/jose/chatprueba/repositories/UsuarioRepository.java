@@ -24,6 +24,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
             "and c.id <> a.id")
     Usuario buscaPorEmailCompleto(@Param("email") String email);
 
-    @Query("select new com.jose.chatprueba.models.Usuario(u.nombre, u.mail) from Usuario u")
+    @Query("select new com.jose.chatprueba.models.Usuario(u.nombre, u.mail, u.imagen) from Usuario u")
     List<Usuario> buscaTodosDTO();
 }

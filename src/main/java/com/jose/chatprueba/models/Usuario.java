@@ -28,15 +28,17 @@ public class Usuario {
     @OneToMany(fetch = FetchType.LAZY, /*cascade = CascadeType.ALL ,*/ mappedBy = "usuario")
     private List<Mensaje> mensajes;
 
-    public Usuario(String nombre, String pass, String mail) {
+    public Usuario(String nombre, String pass, String mail, String imagen) {
         this.nombre = nombre;
         this.pass = pass;
         this.mail = mail;
+        this.imagen = imagen;
     }
 
-    public Usuario(String nombre, String mail){
+    public Usuario(String nombre, String mail, String imagen){
         this.nombre = nombre;
         this.mail = mail;
+        this.imagen = imagen;
     }
 
     //Helpers

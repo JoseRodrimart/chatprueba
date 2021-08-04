@@ -3,6 +3,7 @@ package com.jose.chatprueba;
 import com.jose.chatprueba.services.ChatServices;
 import com.jose.chatprueba.services.MensajeServices;
 import com.jose.chatprueba.services.UsuarioServices;
+import com.jose.chatprueba.services.IFicheroServices;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -34,11 +35,14 @@ public class ChatpruebaApplication {
     ChatServices chatServices;
     @Autowired
     MensajeServices mensajeServices;
+    @Autowired
+    IFicheroServices ficheroService;
 
     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
         return args -> {
             System.out.println();
+            ficheroService.init();
         };
     }
 }

@@ -1,27 +1,21 @@
 package com.jose.chatprueba.controllerj;
 
 import com.jose.chatprueba.dto.UsuarioDTO;
-import com.jose.chatprueba.dto.converter.UsuarioDTOConverter;
 import com.jose.chatprueba.error.UsuarioNotFoundException;
-import com.jose.chatprueba.models.Chat;
 import com.jose.chatprueba.models.Usuario;
 import com.jose.chatprueba.services.ChatServices;
 import com.jose.chatprueba.services.MensajeServices;
 import com.jose.chatprueba.services.UsuarioServices;
-import com.jose.chatprueba.upload.StorageService;
+import com.jose.chatprueba.services.IFicheroServices;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @RestController
@@ -30,7 +24,7 @@ public class UsuarioController {
     UsuarioServices usuarioServices;
     ChatServices chatServices;
     MensajeServices mensajeServices;
-    StorageService storageService;
+    IFicheroServices iFicheroServices;
 
     @GetMapping("/usuario")
     public ResponseEntity<List<UsuarioDTO>> usuarios(){
@@ -56,9 +50,12 @@ public class UsuarioController {
         String urlImagen = null;
 
         if(!file.isEmpty()){
-            String imagen = storageService.store(file);
+            String imagen = iFicheroServices.store(file);
             urlImagen = MvcUriComponentsBuilder
-                            .fromMethodName(FicherosController.class, "serveFile", imagen, null)
+                            .fromMethodName(
+                                    FicherosController.class,
+                                    "serveFile",
+                                    imagen)
                             .build()
                             .toUriString();
         }

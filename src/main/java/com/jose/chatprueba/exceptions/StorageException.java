@@ -1,4 +1,4 @@
-package com.jose.chatprueba.error;
+package com.jose.chatprueba.exceptions;
 
 public class StorageException extends RuntimeException{
 

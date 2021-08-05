@@ -9,8 +9,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
-import com.jose.chatprueba.error.StorageException;
-import com.jose.chatprueba.error.StorageFileNotFoundException;
+import com.jose.chatprueba.exceptions.StorageException;
+import com.jose.chatprueba.exceptions.StorageFileNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;

@@ -13,5 +13,4 @@ public interface IServices<T> {
     public T registra(T t);
     public void elimina(T t);
     public void elimina(Integer id);
-
 }

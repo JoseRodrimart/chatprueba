@@ -8,10 +8,8 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@RequiredArgsConstructor
+@Getter @Setter @AllArgsConstructor
+@NoArgsConstructor @RequiredArgsConstructor @Builder
 public class ApiError {
     @NonNull
     private HttpStatus estado;

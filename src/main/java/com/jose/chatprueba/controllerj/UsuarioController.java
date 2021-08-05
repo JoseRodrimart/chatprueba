@@ -1,7 +1,9 @@
 package com.jose.chatprueba.controllerj;
 
-import com.jose.chatprueba.dto.UsuarioDTO;
-import com.jose.chatprueba.error.UsuarioNotFoundException;
+import com.jose.chatprueba.dto.CreateUsuarioDTO;
+import com.jose.chatprueba.dto.GetUsuarioDTO;
+import com.jose.chatprueba.dto.converter.UsuarioDTOConverter;
+import com.jose.chatprueba.exceptions.UsuarioNotFoundException;
 import com.jose.chatprueba.models.Usuario;
 import com.jose.chatprueba.services.ChatServices;
 import com.jose.chatprueba.services.MensajeServices;
@@ -25,30 +27,33 @@ public class UsuarioController {
     ChatServices chatServices;
     MensajeServices mensajeServices;
     IFicheroServices iFicheroServices;
+    UsuarioDTOConverter usuarioDTOConverter;
 
     @GetMapping("/usuario")
-    public ResponseEntity<List<UsuarioDTO>> usuarios(){
-        List<UsuarioDTO> lista = usuarioServices.buscaTodosDTO();
+    public ResponseEntity<List<GetUsuarioDTO>> usuarios(){
+        List<GetUsuarioDTO> lista = usuarioServices.buscaTodosDTO();
         if(lista.isEmpty())
             return ResponseEntity.notFound().build();
         else{
             return ResponseEntity.ok(lista);
         }
     }
-    @GetMapping("/usuario/{id}")
-    public Usuario usuario(@PathVariable Integer id){
-        return usuarioServices
-                .buscaPorId(id)
-                .orElseThrow(()->new UsuarioNotFoundException(id));
+    @GetMapping("/usuarioCompleto/{id}")
+    public Usuario usuarioCompleto(@PathVariable Integer id){
+        Usuario u = usuarioServices.buscaPorId(id).orElseThrow(()->new UsuarioNotFoundException(id));
+        return u;
     }
+    @GetMapping("/usuario/{id}")
+    public GetUsuarioDTO usuario(@PathVariable Integer id){
+        return usuarioServices.convierteDTO(id);
+    }
+
     @PostMapping(value="/usuario", consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Usuario> registraUsuario(
-            @RequestPart("nuevo") Usuario usuario,
+    public ResponseEntity<GetUsuarioDTO> registraUsuario(
+            @RequestPart("nuevo") CreateUsuarioDTO usuario,
             @RequestPart("file") MultipartFile file
     ){
-
         String urlImagen = null;
-
         if(!file.isEmpty()){
             String imagen = iFicheroServices.store(file);
             urlImagen = MvcUriComponentsBuilder
@@ -62,8 +67,7 @@ public class UsuarioController {
 
         usuario.setImagen(urlImagen);
 
-        Usuario guardado = usuarioServices.registra(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioDTOConverter.convertToDTO(usuarioServices.registra(usuario)));
     }
     @PutMapping("/usuario/{id}")
     public Usuario editaUsuario(@RequestBody Usuario usuario, @PathVariable Integer id){

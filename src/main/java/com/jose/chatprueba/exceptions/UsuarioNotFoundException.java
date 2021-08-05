@@ -1,4 +1,4 @@
-package com.jose.chatprueba.error;
+package com.jose.chatprueba.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

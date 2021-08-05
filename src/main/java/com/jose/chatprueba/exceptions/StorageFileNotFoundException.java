@@ -1,6 +1,8 @@
-package com.jose.chatprueba.error;
+package com.jose.chatprueba.exceptions;
 
-public class StorageFileNotFoundException extends StorageException{
+import com.jose.chatprueba.exceptions.StorageException;
+
+public class StorageFileNotFoundException extends StorageException {
 
     private static final long serialVersionUID = -710592347797649832L;
 

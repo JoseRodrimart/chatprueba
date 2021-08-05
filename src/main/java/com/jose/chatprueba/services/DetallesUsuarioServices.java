@@ -1,6 +1,7 @@
 package com.jose.chatprueba.services;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,6 +18,10 @@ public class DetallesUsuarioServices implements UserDetailsService {
         return usuarioServices
                 .buscaPorNombre(nombre)
                 .orElseThrow(()->new UsernameNotFoundException(nombre + "no encontrado"));
+    }
+
+    public UserDetails loadUsersById(Integer id) throws UsernameNotFoundException {
+        return usuarioServices.buscaPorId(id).orElseThrow(()->new UsernameNotFoundException("Usuario con ID: "+ id + " no encontrado"));
     }
 
 }

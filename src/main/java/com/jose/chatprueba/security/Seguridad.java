@@ -1,8 +1,12 @@
 package com.jose.chatprueba.security;
 
+import com.jose.chatprueba.security.jwt.JwtAuthorizationFilter;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -16,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.security.Key;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -24,6 +30,8 @@ public class Seguridad extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    @Lazy
+    private final JwtAuthorizationFilter jwtAuthorizationFilter;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -53,9 +61,7 @@ public class Seguridad extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.DELETE, "/usuario/**").hasRole("ADMIN")
                     .anyRequest().authenticated();
 
-        http.addFilterBefore(null, UsernamePasswordAuthenticationFilter.class);
-
-
+        http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
     }
 }

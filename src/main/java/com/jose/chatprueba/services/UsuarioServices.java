@@ -1,16 +1,28 @@
 package com.jose.chatprueba.services;
 
-import com.jose.chatprueba.dto.UsuarioDTO;
+import com.jose.chatprueba.dto.CreateUsuarioDTO;
+import com.jose.chatprueba.dto.GetUsuarioDTO;
 import com.jose.chatprueba.dto.converter.UsuarioDTOConverter;
+import com.jose.chatprueba.exceptions.UsuarioConPasswordsDistintasException;
+import com.jose.chatprueba.exceptions.UsuarioNotFoundException;
 import com.jose.chatprueba.models.Usuario;
 import com.jose.chatprueba.repositories.UsuarioRepository;
+import com.jose.chatprueba.security.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -19,6 +31,8 @@ public class UsuarioServices implements IServices<Usuario>, IUsuarioServices{
     UsuarioRepository usuarioRepository;
     @Autowired
     UsuarioDTOConverter usuarioDTOConverter;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     //Metodos comunes de los servicios
     @Override
@@ -43,10 +57,12 @@ public class UsuarioServices implements IServices<Usuario>, IUsuarioServices{
             return false;
         }
     }
+
     @Override
     public Usuario registra(Usuario usuario) {
-        return usuarioRepository.save(usuario);
+        return null;
     }
+
     @Override
     public void elimina(Usuario usuario) {
         usuarioRepository.delete(usuario);
@@ -57,9 +73,14 @@ public class UsuarioServices implements IServices<Usuario>, IUsuarioServices{
     }
 
     //Metodos propios de IUsusarioServices
-    public List<UsuarioDTO> buscaTodosDTO(){
-        List<Usuario> usuarios = usuarioRepository.buscaTodosDTO();
-        List<UsuarioDTO> listaDTO = usuarios.stream().map(usuarioDTOConverter::convertToDTO).collect(Collectors.toList());
+    @Override
+    public Optional<Usuario> buscaPorNombre(String nombre){
+        return usuarioRepository.buscaPorNombre(nombre);
+    }
+    @Override
+    public List<GetUsuarioDTO> buscaTodosDTO(){
+        List<Usuario> usuarios = usuarioRepository.findAll();
+        List<GetUsuarioDTO> listaDTO = usuarios.stream().map(usuarioDTOConverter::convertToDTO).collect(Collectors.toList());
         return listaDTO;
     }
     @Override
@@ -89,5 +110,34 @@ public class UsuarioServices implements IServices<Usuario>, IUsuarioServices{
             e.printStackTrace();
             return false;
         }
+    }
+
+    //Metodos sin implementar en interfaces
+
+    public GetUsuarioDTO convierteDTO(Integer id){
+        Optional<Usuario> usuario = usuarioRepository.findById(id);
+        return usuario.map(usuarioDTOConverter::convertToDTO).orElseThrow(()->new UsuarioNotFoundException(id));
+    }
+
+    public Usuario registra(CreateUsuarioDTO usuario) {
+        if(usuario.getPass().contentEquals(usuario.getPass2())) {
+            Usuario nuevo = Usuario.builder()
+                    .nombre(usuario.getNombre())
+                    .mail(usuario.getMail())
+                    .pass(passwordEncoder.encode(usuario.getPass()))
+                    .imagen(usuario.getImagen())
+                    .roles(Stream.of(UserRole.USER).collect(Collectors.toSet()))
+                    .build();
+            try{
+                return usuarioRepository.save(nuevo);
+            }catch (DataIntegrityViolationException ex){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El nombre o el mail ya están registrados");
+            }
+        }
+        else throw new UsuarioConPasswordsDistintasException();
+    }
+
+    public UserDetails loadUserById(Integer id) throws UsuarioNotFoundException{
+        return usuarioRepository.findById(id).orElseThrow(()->new UsuarioNotFoundException(id));
     }
 }

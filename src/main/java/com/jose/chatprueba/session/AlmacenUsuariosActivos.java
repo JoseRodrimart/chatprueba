@@ -5,10 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-
-@Component
-@Data
-@RequiredArgsConstructor
-public class AlmacenUsuariosActivos {
-    public List<String> users;
-}
+//
+//@Component
+//@Data
+//@RequiredArgsConstructor
+//public class AlmacenUsuariosActivos {
+//    public List<String> usuarios;
+//}

@@ -5,11 +5,9 @@ import com.jose.chatprueba.security.UserRole;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import java.security.Key;
@@ -25,8 +23,8 @@ public class JwtProvider {
     private Key key;
 
     @Autowired
-    public Key setKey(@Value("${jwt.secret}") String jwtSecreto){
-        return Keys.hmacShaKeyFor(jwtSecreto.getBytes());
+    public void setKey(@Value("${jwt.secret}") String jwtSecreto){
+        this.key = Keys.hmacShaKeyFor(jwtSecreto.getBytes());
     }
 
 

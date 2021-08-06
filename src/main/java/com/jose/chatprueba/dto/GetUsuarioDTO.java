@@ -7,5 +7,5 @@ import java.util.Set;
 
 @Data @AllArgsConstructor @NoArgsConstructor @SuperBuilder
 public class GetUsuarioDTO extends UsuarioDTO{
-    private Set<String> roles;
+    protected Set<String> roles;
 }

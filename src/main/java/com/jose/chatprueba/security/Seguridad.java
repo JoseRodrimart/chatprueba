@@ -1,9 +1,7 @@
 package com.jose.chatprueba.security;
 
 import com.jose.chatprueba.security.jwt.JwtAuthorizationFilter;
-import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -19,19 +17,46 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.security.Key;
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
-public class Seguridad extends WebSecurityConfigurerAdapter {
+public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationEntryPoint jwtAuthenticationEntryPoint;
     @Lazy
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
+
+    //Configuracion del CORS
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource(){
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5500/"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+
+        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource =
+                new UrlBasedCorsConfigurationSource();
+        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**",configuration);
+        return urlBasedCorsConfigurationSource;
+    }
+//
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**");
+//    }
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -55,11 +80,14 @@ public class Seguridad extends WebSecurityConfigurerAdapter {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                    .antMatchers(HttpMethod.POST, "/auth/login").permitAll()
                     .antMatchers(HttpMethod.GET, "/usuario/**").hasRole("USER")
                     .antMatchers(HttpMethod.POST, "/usuario/**").hasRole("ADMIN")
                     .antMatchers(HttpMethod.PUT, "/usuario/**").hasRole("ADMIN")
                     .antMatchers(HttpMethod.DELETE, "/usuario/**").hasRole("ADMIN")
                     .anyRequest().authenticated();
+
+        http.cors();
 
         http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 

@@ -1,6 +1,6 @@
 package com.jose.chatprueba.security;
 
-import com.jose.chatprueba.security.jwt.JwtAuthorizationFilter;
+import com.jose.chatprueba.security.httpFilters.JwtAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -26,9 +26,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import java.security.Key;
 import java.util.Arrays;
 
 @Configuration
@@ -52,46 +50,56 @@ public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcCon
         return new ServletListenerRegistrationBean<HttpSessionEventPublisher>(new HttpSessionEventPublisher());
     }
 
-    //Configuracion del CORS
-
-    @Bean
-    CorsConfigurationSource corsConfigurationSource(){
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5500/"));
-        configuration.setAllowedMethods(Arrays.asList("GET","POST"));
-
-        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource =
-                new UrlBasedCorsConfigurationSource();
-        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**",configuration);
-        return urlBasedCorsConfigurationSource;
-    }
-//
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        registry.addMapping("/**");
-//    }
-
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
-    }
-
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
+    //Configuracion del CORS
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource(){
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedOrigins(
+                Arrays.asList("http://localhost:4200/"));
+        configuration.setAllowedMethods(
+                Arrays.asList("HEAD","GET", "POST", "PUT", "DELETE", "PATCH"));
+        configuration.setAllowedHeaders(
+                Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
+    }
+
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//                .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH");
+//    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
+                .cors()
+                .and()
+                .csrf().disable() //Desactivar y testear en versiones finales
                 .exceptionHandling()
                     .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and()
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                    .maximumSessions(1)
+                    .sessionRegistry(sessionRegistry())
+                .and()
                 .and()
                 .authorizeRequests()
                     .antMatchers(HttpMethod.POST, "/auth/login").permitAll()
@@ -99,13 +107,9 @@ public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcCon
                     .antMatchers(HttpMethod.POST, "/usuario/**").hasRole("ADMIN")
                     .antMatchers(HttpMethod.PUT, "/usuario/**").hasRole("ADMIN")
                     .antMatchers(HttpMethod.DELETE, "/usuario/**").hasRole("ADMIN")
-                    .anyRequest().authenticated();
-
-        http.cors();
-
-        http.sessionManagement().maximumSessions(1).sessionRegistry(sessionRegistry());
-
-        http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
-
+                    .anyRequest().authenticated()
+                .and()
+                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
     }
+
 }

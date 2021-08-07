@@ -31,12 +31,6 @@ public class AuthenticationController {
     private final UsuarioDTOConverter converter;
     @Autowired private SessionRegistry sessionRegistry;
 
-
-    @GetMapping("/auth/logout")
-    public void logout(@AuthenticationPrincipal Usuario user){
-        sessionRegistry.removeSessionInformation(user.getNombre());
-    }
-
     @PostMapping("/auth/login")
     public ResponseEntity<GetUsuarioDTOToken> login(@Valid @RequestBody LoginRequest loginRequest){
 
@@ -50,12 +44,19 @@ public class AuthenticationController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        sessionRegistry.registerNewSession(authentication.getName() ,authentication.getName());
+        sessionRegistry.registerNewSession("name" , authentication.getName());
+        System.out.println("Usuario " + authentication.getName() + " ingresado en sesión");
 
         Usuario usuario = (Usuario)authentication.getPrincipal();
+
         String token = tokenProvider.generateToken(authentication);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(converter.convertToDTOWithToken(usuario,token));
+    }
+
+    @GetMapping("/auth/logout")
+    public void logout(@AuthenticationPrincipal Usuario user){
+        sessionRegistry.removeSessionInformation(user.getNombre());
     }
 
     @GetMapping("/usuariosLogeados")

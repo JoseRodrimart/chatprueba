@@ -1,6 +1,7 @@
-package com.jose.chatprueba.security.jwt;
+package com.jose.chatprueba.security.httpFilters;
 
 import com.jose.chatprueba.models.Usuario;
+import com.jose.chatprueba.security.jwt.JwtProvider;
 import com.jose.chatprueba.services.DetallesUsuarioServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

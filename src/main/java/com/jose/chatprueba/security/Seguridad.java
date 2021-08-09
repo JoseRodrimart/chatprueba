@@ -62,8 +62,8 @@ public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcCon
     CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(
-                Arrays.asList("http://localhost:4200/"));
+        configuration.setAllowedOriginPatterns(
+                Arrays.asList("http://localhost:[*]"));
         configuration.setAllowedMethods(
                 Arrays.asList("HEAD","GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowedHeaders(
@@ -71,15 +71,8 @@ public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcCon
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-
         return source;
     }
-
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        registry.addMapping("/**")
-//                .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH");
-//    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -102,6 +95,8 @@ public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcCon
                 .and()
                 .and()
                 .authorizeRequests()
+                    .antMatchers(HttpMethod.GET, "/chat").permitAll()
+                    .antMatchers(HttpMethod.GET, "/chat/**").permitAll()
                     .antMatchers(HttpMethod.POST, "/auth/login").permitAll()
                     .antMatchers(HttpMethod.GET, "/usuario/**").hasRole("USER")
                     .antMatchers(HttpMethod.POST, "/usuario/**").hasRole("ADMIN")

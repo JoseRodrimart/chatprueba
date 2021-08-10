@@ -1,5 +1,8 @@
 package com.jose.chatprueba.websocket;
 
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -10,11 +13,15 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class webSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+    @Autowired HttpHandshakeInterceptor httpHandshakeInterceptor;
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/chat");
-        //registry.addEndpoint("/chat").withSockJs;
-        registry.addEndpoint("/chat").setAllowedOriginPatterns("http://localhost:[*]");
+        registry
+                .addEndpoint("/chat")
+       //         .withSockJs()
+                .setAllowedOriginPatterns("http://localhost:[*]")
+                .addInterceptors(httpHandshakeInterceptor);
     }
 
     @Override

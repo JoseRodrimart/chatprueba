@@ -20,13 +20,13 @@ public class webSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry
                 .addEndpoint("/chat")
        //         .withSockJs()
-                .setAllowedOriginPatterns("http://localhost:[*]")
+                .setAllowedOriginPatterns("http://localhost:[*]","chrome-extension://**","file://")
                 .addInterceptors(httpHandshakeInterceptor);
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic");
+        registry.enableSimpleBroker("/broker");
         registry.setApplicationDestinationPrefixes("/app");
     }
 }

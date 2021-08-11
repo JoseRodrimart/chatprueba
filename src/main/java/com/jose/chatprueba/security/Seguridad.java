@@ -63,7 +63,7 @@ public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcCon
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.setAllowedOriginPatterns(
-                Arrays.asList("http://localhost:[*]"));
+                Arrays.asList("http://localhost:[*]","chrome-extension://**","file://"));
         configuration.setAllowedMethods(
                 Arrays.asList("HEAD","GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowedHeaders(

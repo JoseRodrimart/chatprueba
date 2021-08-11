@@ -5,6 +5,7 @@ import com.jose.chatprueba.dto.GetUsuarioDTO;
 import com.jose.chatprueba.dto.converter.UsuarioDTOConverter;
 import com.jose.chatprueba.exceptions.UsuarioNotFoundException;
 import com.jose.chatprueba.models.Usuario;
+import com.jose.chatprueba.security.UserRole;
 import com.jose.chatprueba.services.ChatServices;
 import com.jose.chatprueba.services.MensajeServices;
 import com.jose.chatprueba.services.UsuarioServices;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @RestController
@@ -70,12 +72,14 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioDTOConverter.convertToDTO(usuarioServices.registra(usuario)));
     }
     @PutMapping("/usuario/{id}")
-    public Usuario editaUsuario(@RequestBody Usuario usuario, @PathVariable Integer id){
+    public Usuario editaUsuario(@RequestBody GetUsuarioDTO usuario, @PathVariable Integer id){
         Usuario u = usuarioServices.buscaPorId(id).orElseThrow(()->new UsuarioNotFoundException(id));
         u.setNombre(usuario.getNombre());
         u.setMail(usuario.getMail());
-        u.setPass(usuario.getPass());
-
+        Set<String> roles = usuario.getRoles();
+        Set<UserRole> rolesEnum = (Set<UserRole>) roles.stream().map(UserRole::valueOf);
+        u.setRoles(rolesEnum);
+        usuarioServices.registra(u);
         return u;
     }
     @DeleteMapping("/usuario/{id}")

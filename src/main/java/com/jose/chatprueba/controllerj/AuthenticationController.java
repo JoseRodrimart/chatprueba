@@ -34,7 +34,7 @@ public class AuthenticationController {
     private final ChatServices chatServices;
     private final JwtProvider tokenProvider;
     private final UsuarioDTOConverter converter;
-    @Autowired private SessionRegistry sessionRegistry;
+    //@Autowired private SessionRegistry sessionRegistry;
 
     @PostMapping("/auth/login")
     public ResponseEntity<GetUsuarioDTOToken> login(@Valid @RequestBody LoginRequest loginRequest){
@@ -49,8 +49,8 @@ public class AuthenticationController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        sessionRegistry.registerNewSession("name" , authentication.getName());
-        System.out.println("Usuario " + authentication.getName() + " ingresado en sesión");
+        //sessionRegistry.registerNewSession("name" , authentication.getName());
+        //System.out.println("Usuario " + authentication.getName() + " ingresado en sesión");
 
         Usuario usuario = (Usuario)authentication.getPrincipal();
 
@@ -59,20 +59,20 @@ public class AuthenticationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(converter.convertToDTOWithToken(usuario,token));
     }
 
-    @GetMapping("/auth/logout")
-    public void logout(@AuthenticationPrincipal Usuario user){
-        sessionRegistry.removeSessionInformation(user.getNombre());
-    }
+//    @GetMapping("/auth/logout")
+//    public void logout(@AuthenticationPrincipal Usuario user){
+//        sessionRegistry.removeSessionInformation(user.getNombre());
+//    }
 
-    @GetMapping("/usuariosLogeados")
-    public List<Object> usuariosLogeados(){
-        List<Object> lista = sessionRegistry.getAllPrincipals();
-        for(Object usuario:lista){
-            if(usuario instanceof Usuario)
-                System.out.println(((Usuario) usuario).getNombre());
-        }
-        return sessionRegistry.getAllPrincipals();
-    }
+//    @GetMapping("/usuariosLogeados")
+//    public List<Object> usuariosLogeados(){
+//        List<Object> lista = sessionRegistry.getAllPrincipals();
+//        for(Object usuario:lista){
+//            if(usuario instanceof Usuario)
+//                System.out.println(((Usuario) usuario).getNombre());
+//        }
+//        return sessionRegistry.getAllPrincipals();
+//    }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/user/me")
@@ -83,6 +83,7 @@ public class AuthenticationController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/user/chats")
     public Optional<List<Chat>> chatsUsuario(@AuthenticationPrincipal Usuario user){
+        System.out.println(user.getNombre());
         return chatServices.buscaPorUsuario(user.getId());
     }
 

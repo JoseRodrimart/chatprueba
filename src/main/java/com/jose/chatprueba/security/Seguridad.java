@@ -63,11 +63,17 @@ public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcCon
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.setAllowedOriginPatterns(
-                Arrays.asList("http://localhost:[*]","chrome-extension://**","file://"));
+                Arrays.asList("http://localhost:[*]","chrome-extension://**","file://**"));
         configuration.setAllowedMethods(
-                Arrays.asList("HEAD","GET", "POST", "PUT", "DELETE", "PATCH"));
+                Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowedHeaders(
-                Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+                Arrays.asList(
+                        "Authorization",    
+                        "Cache-Control",
+                        "Content-Type",
+                        "Access-Control-Allow-Origin",
+                        "Access-Control-Allow-Credentials"
+                ));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -89,11 +95,11 @@ public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcCon
                     .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and()
                 .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-                    .maximumSessions(1)
-                    .sessionRegistry(sessionRegistry())
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    //.maximumSessions(1)
+                    //.sessionRegistry(sessionRegistry())
                 .and()
-                .and()
+                //.and()
                 .authorizeRequests()
                     .antMatchers(HttpMethod.GET, "/chat").permitAll()
                     .antMatchers(HttpMethod.GET, "/chat/**").permitAll()
@@ -102,9 +108,9 @@ public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcCon
                     .antMatchers(HttpMethod.POST, "/usuario/**").hasRole("ADMIN")
                     .antMatchers(HttpMethod.PUT, "/usuario/**").hasRole("ADMIN")
                     .antMatchers(HttpMethod.DELETE, "/usuario/**").hasRole("ADMIN")
+                    .antMatchers(HttpMethod.GET, "/user/**").hasRole("USER")
                     .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
     }
-
 }

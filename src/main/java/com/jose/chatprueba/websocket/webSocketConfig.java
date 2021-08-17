@@ -20,7 +20,11 @@ public class webSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry
                 .addEndpoint("/chat")
        //         .withSockJs()
-                .setAllowedOriginPatterns("http://localhost:[*]","chrome-extension://**","file://")
+                .setAllowedOriginPatterns(
+                        "http://localhost:[*]",
+                        "chrome-extension://**",
+                        "file://**",
+                        "https://apic.app/**")
                 .addInterceptors(httpHandshakeInterceptor);
     }
 

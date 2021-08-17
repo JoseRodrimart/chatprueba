@@ -9,16 +9,17 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class WebSocketController {
 
-    @MessageMapping("/status")
-    @SendTo("/topic/messages")
-    public MensajeSimple enviaMensaje(String mensaje){
+    @MessageMapping("/grupos")
+    @SendTo("/broker/mensajes")
+    public String enviaMensaje(String mensaje){
         System.out.println("Mensaje recibido: "+ mensaje);
-        return new MensajeSimple("jose",mensaje);
+        return mensaje;
     }
 
     @MessageMapping("/grupos/{grupoID}")
     @SendTo("/broker/mensajes/{grupoID}")
-    public MensajeSimple mensajeSimple(@DestinationVariable Integer grupoID, String mensaje, String usuario) {
-        return new MensajeSimple(usuario,mensaje);
+    public String mensajeSimple(@DestinationVariable Integer grupoID, String mensaje) {
+        System.out.println("mensaje recibido");
+        return mensaje;
     }
 }

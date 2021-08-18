@@ -42,6 +42,7 @@ public class webSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void onSocketConnected(SessionConnectedEvent event) {
         StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
         System.out.println("[Connected] " + sha.getSessionId());
+        //System.out.println(event.getUser());
     }
 
     @EventListener

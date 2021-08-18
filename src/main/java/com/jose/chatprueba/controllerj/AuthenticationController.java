@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,9 +23,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,10 +40,13 @@ public class AuthenticationController {
     private final ChatServices chatServices;
     private final JwtProvider tokenProvider;
     private final UsuarioDTOConverter converter;
-    //@Autowired private SessionRegistry sessionRegistry;
+    @Autowired private SessionRegistry sessionRegistry;
+
 
     @PostMapping("/auth/login")
-    public ResponseEntity<GetUsuarioDTOToken> login(@Valid @RequestBody LoginRequest loginRequest){
+    public ResponseEntity<GetUsuarioDTOToken> login(
+            @Valid @RequestBody LoginRequest loginRequest,
+            HttpServletRequest request){
 
         Authentication authentication =
                 authenticationManager
@@ -48,9 +57,21 @@ public class AuthenticationController {
                                 ));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        Optional<Cookie> cookie = Arrays.stream(request
+                .getCookies())
+                .filter(x->x.getName().equals("JSESSIONID")).findFirst();
+        if(cookie.isPresent()) {
+            System.out.println(cookie.get().getValue());
+            sessionRegistry.registerNewSession(
+                    cookie.get().getValue() , authentication.getPrincipal());
+        }
+        else{
+            System.out.println("No se incluye la cookie");
+            sessionRegistry.registerNewSession(
+                    "1" , authentication.getPrincipal());
+        }
 
-        //sessionRegistry.registerNewSession("name" , authentication.getName());
-        //System.out.println("Usuario " + authentication.getName() + " ingresado en sesión");
+        System.out.println("Usuario " + authentication.getName() + " ingresado en sesión");
 
         Usuario usuario = (Usuario)authentication.getPrincipal();
 
@@ -83,7 +104,7 @@ public class AuthenticationController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/user/chats")
     public Optional<List<Chat>> chatsUsuario(@AuthenticationPrincipal Usuario user){
-        System.out.println(user.getNombre());
+        //System.out.println(user.getNombre());
         return chatServices.buscaPorUsuario(user.getId());
     }
 

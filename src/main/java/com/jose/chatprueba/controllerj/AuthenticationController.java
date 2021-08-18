@@ -40,13 +40,14 @@ public class AuthenticationController {
     private final ChatServices chatServices;
     private final JwtProvider tokenProvider;
     private final UsuarioDTOConverter converter;
-    @Autowired private SessionRegistry sessionRegistry;
+    //@Autowired private SessionRegistry sessionRegistry;
 
 
     @PostMapping("/auth/login")
     public ResponseEntity<GetUsuarioDTOToken> login(
-            @Valid @RequestBody LoginRequest loginRequest,
-            HttpServletRequest request){
+            @Valid @RequestBody LoginRequest loginRequest
+            //,HttpServletRequest request
+            ){
 
         Authentication authentication =
                 authenticationManager
@@ -57,19 +58,19 @@ public class AuthenticationController {
                                 ));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        Optional<Cookie> cookie = Arrays.stream(request
-                .getCookies())
-                .filter(x->x.getName().equals("JSESSIONID")).findFirst();
-        if(cookie.isPresent()) {
-            System.out.println(cookie.get().getValue());
-            sessionRegistry.registerNewSession(
-                    cookie.get().getValue() , authentication.getPrincipal());
-        }
-        else{
-            System.out.println("No se incluye la cookie");
-            sessionRegistry.registerNewSession(
-                    "1" , authentication.getPrincipal());
-        }
+//        Optional<Cookie> cookie = Arrays.stream(request
+//                .getCookies())
+//                .filter(x->x.getName().equals("JSESSIONID")).findFirst();
+//        if(cookie.isPresent()) {
+//            System.out.println(cookie.get().getValue());
+//            //sessionRegistry.registerNewSession(
+//            //        cookie.get().getValue() , authentication.getPrincipal());
+//        }
+//        else{
+//            System.out.println("No se incluye la cookie");
+//            //sessionRegistry.registerNewSession(
+//                    //"1" , authentication.getPrincipal());
+//        }
 
         System.out.println("Usuario " + authentication.getName() + " ingresado en sesión");
 

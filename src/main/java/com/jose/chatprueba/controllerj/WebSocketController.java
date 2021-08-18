@@ -19,7 +19,7 @@ public class WebSocketController {
     @MessageMapping("/grupos/{grupoID}")
     @SendTo("/broker/mensajes/{grupoID}")
     public String mensajeSimple(@DestinationVariable Integer grupoID, String mensaje) {
-        System.out.println("mensaje recibido");
+        System.out.println("WebSocketController: mensaje recibido en el grupo: "+grupoID);
         return mensaje;
     }
 }

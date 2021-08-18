@@ -24,7 +24,7 @@ public class HttpHandshakeInterceptor implements HandshakeInterceptor {
         //System.out.println(request.getHeaders().getConnection());
         if (request instanceof ServletServerHttpRequest) {
             ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
-
+            System.out.println(servletRequest.getHeaders().toString());
             Arrays.stream(servletRequest.getServletRequest()
                     .getCookies())
                     .forEach(x->System.out.println(x.getName()+": "+x.getValue()));

@@ -2,6 +2,7 @@ package com.jose.chatprueba.security;
 
 import com.jose.chatprueba.security.httpFilters.JwtAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,6 +38,7 @@ public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcCon
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
     @Lazy
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
 

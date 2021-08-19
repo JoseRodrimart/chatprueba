@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
+import java.util.Objects;
+
 @Service
 public class StompInterceptor implements ChannelInterceptor {
 
@@ -31,14 +33,17 @@ public class StompInterceptor implements ChannelInterceptor {
     @EventListener
     public void handleSessionSubscribeEvent(SessionSubscribeEvent event) {
         //System.out.println("StompIntercpetor.handleSessionSubscribeEvent: "+event.getMessage().getHeaders().toString());
-        //System.out.println("StompInterceptor.handleSessionSubscribeEvent: Usuario suscrito");
+        System.out.println("StompInterceptor.handleSessionSubscribeEvent: " +
+                "Se ha suscrito el usuario " + event.getUser() + " a " + event.getMessage().getHeaders().get("simpDestination"));
     }
+
     @EventListener
     public void handleSessionConnectedEvent(SessionConnectedEvent event) {
 //        StompHeaderAccessor headerAccessor = StompHeaderAccessor.create(StompCommand.ERROR);
 //        headerAccessor.setMessage("no perteneces a este chat");
 //        this.clientOutboundChannel.send(MessageBuilder.createMessage(new byte[0], headerAccessor.getMessageHeaders()));
-        //System.out.println("StompInterceptor: "+ event.getMessage().getHeaders().toString());
-        //System.out.println("StompInterceptor: conectado el usuario: "+event.getUser().getName());
+        System.out.println("StompInterceptor: "+ event.getMessage().getHeaders().toString());
+        System.out.println("StompInterceptor.handleSessionConnectedEvent: " +
+                "Conectado el usuario: "+ event.getUser());
     }
 }

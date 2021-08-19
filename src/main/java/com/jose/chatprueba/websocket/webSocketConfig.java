@@ -41,12 +41,12 @@ public class webSocketConfig implements WebSocketMessageBrokerConfigurer {
     @EventListener
     public void onSocketConnected(SessionConnectedEvent event) {
         StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
-        //System.out.println("webSocketConfig: [Connected] " + sha.getUser().getName());
+        System.out.println("webSocketConfig: [Connected] " + sha.getUser());
     }
 
     @EventListener
     public void onSocketDisconnected(SessionDisconnectEvent event) {
         StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
-        //System.out.println("webSocketConfig: [Disconnected] " + sha.getUser().getName());
+        System.out.println("webSocketConfig: [Disconnected] " + sha.getUser());
     }
 }

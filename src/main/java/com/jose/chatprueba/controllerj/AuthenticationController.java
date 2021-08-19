@@ -40,12 +40,12 @@ public class AuthenticationController {
     private final ChatServices chatServices;
     private final JwtProvider tokenProvider;
     private final UsuarioDTOConverter converter;
-    //@Autowired private SessionRegistry sessionRegistry;
+    @Autowired private SessionRegistry sessionRegistry;
 
     @PostMapping("/auth/login")
     public ResponseEntity<GetUsuarioDTOToken> login(
             @Valid @RequestBody LoginRequest loginRequest
-            //,HttpServletRequest request
+            //,HttpServletResponse response
             ){
 
         Authentication authentication =
@@ -67,17 +67,25 @@ public class AuthenticationController {
 //        }
 //        else{
 //            System.out.println("No se incluye la cookie");
-//            //sessionRegistry.registerNewSession(
-//                    //"1" , authentication.getPrincipal());
-//        }
 
-        System.out.println("Usuario " + authentication.getName() + " ingresado en sesión");
+//        }
+        System.out.println(sessionRegistry.getAllPrincipals().toString());
+        //sessionRegistry.registerNewSession("1" , authentication.getPrincipal());
+
+        //System.out.println("Usuario " + authentication.getName() + " ingresado en sesión");
 
         Usuario usuario = (Usuario)authentication.getPrincipal();
 
         String token = tokenProvider.generateToken(authentication);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(converter.convertToDTOWithToken(usuario,token));
+//        System.out.println("AuthenticationController: "+response.getHeader("Set-Cookie"));
+//        String header = response.getHeader("Set-Cookie").concat("; SameSite=none; Secure");
+//        response.setHeader("Set-Cookie", header);
+//        System.out.println("AuthenticationController: "+response.getHeader("Set-Cookie"));
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(converter.convertToDTOWithToken(usuario,token));
     }
 
 //    @GetMapping("/auth/logout")

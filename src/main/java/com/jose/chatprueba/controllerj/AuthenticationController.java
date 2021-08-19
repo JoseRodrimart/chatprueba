@@ -42,7 +42,6 @@ public class AuthenticationController {
     private final UsuarioDTOConverter converter;
     //@Autowired private SessionRegistry sessionRegistry;
 
-
     @PostMapping("/auth/login")
     public ResponseEntity<GetUsuarioDTOToken> login(
             @Valid @RequestBody LoginRequest loginRequest

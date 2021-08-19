@@ -1,15 +1,25 @@
 package com.jose.chatprueba.websocket;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.simp.stomp.StompCommand;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
 @Service
 public class StompInterceptor implements ChannelInterceptor {
+
+    @Autowired
+    @Qualifier("clientOutboundChannel")
+    private MessageChannel clientOutboundChannel;
+
     @Override
     public Message<?> preSend(
             Message<?> message,
@@ -20,13 +30,15 @@ public class StompInterceptor implements ChannelInterceptor {
 
     @EventListener
     public void handleSessionSubscribeEvent(SessionSubscribeEvent event) {
-        System.out.println(event.getMessage().getHeaders().toString());
-        System.out.println("StompInterceptor: Usuario suscrito");
+        //System.out.println("StompIntercpetor.handleSessionSubscribeEvent: "+event.getMessage().getHeaders().toString());
+        //System.out.println("StompInterceptor.handleSessionSubscribeEvent: Usuario suscrito");
     }
     @EventListener
-    public void handleSessionSubscribeEvent(SessionConnectedEvent event) {
-        System.out.println(event.getMessage().getHeaders().toString());
-        System.out.println("StompInterceptor: conectado el usuario: "+event.getUser());
-        System.out.println("StompInterceptor: Usuario conectado");
+    public void handleSessionConnectedEvent(SessionConnectedEvent event) {
+//        StompHeaderAccessor headerAccessor = StompHeaderAccessor.create(StompCommand.ERROR);
+//        headerAccessor.setMessage("no perteneces a este chat");
+//        this.clientOutboundChannel.send(MessageBuilder.createMessage(new byte[0], headerAccessor.getMessageHeaders()));
+        //System.out.println("StompInterceptor: "+ event.getMessage().getHeaders().toString());
+        //System.out.println("StompInterceptor: conectado el usuario: "+event.getUser().getName());
     }
 }

@@ -45,7 +45,8 @@ public class AuthenticationController {
     @PostMapping("/auth/login")
     public ResponseEntity<GetUsuarioDTOToken> login(
             @Valid @RequestBody LoginRequest loginRequest
-            //,HttpServletResponse response
+            ,HttpServletResponse response
+            ,HttpServletRequest request
             ){
 
         Authentication authentication =
@@ -62,8 +63,7 @@ public class AuthenticationController {
 //                .filter(x->x.getName().equals("JSESSIONID")).findFirst();
 //        if(cookie.isPresent()) {
 //            System.out.println(cookie.get().getValue());
-//            //sessionRegistry.registerNewSession(
-//            //        cookie.get().getValue() , authentication.getPrincipal());
+//            sessionRegistry.registerNewSession();
 //        }
 //        else{
 //            System.out.println("No se incluye la cookie");
@@ -82,6 +82,9 @@ public class AuthenticationController {
 //        String header = response.getHeader("Set-Cookie").concat("; SameSite=none; Secure");
 //        response.setHeader("Set-Cookie", header);
 //        System.out.println("AuthenticationController: "+response.getHeader("Set-Cookie"));
+
+        System.out.println("AuthenticationController:"+request.getSession().getId());
+        sessionRegistry.registerNewSession(request.getSession().getId(),usuario);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -111,7 +114,11 @@ public class AuthenticationController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/user/chats")
-    public Optional<List<Chat>> chatsUsuario(@AuthenticationPrincipal Usuario user){
+    public Optional<List<Chat>> chatsUsuario(@AuthenticationPrincipal Usuario user
+            ,HttpServletResponse response
+            ,HttpServletRequest request
+    ){
+        System.out.println("AuthenticationController.chatsUsuario: "+request.getSession().getId());
         //System.out.println(user.getNombre());
         return chatServices.buscaPorUsuario(user.getId());
     }

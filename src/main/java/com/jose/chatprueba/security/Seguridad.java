@@ -2,11 +2,14 @@ package com.jose.chatprueba.security;
 
 import com.jose.chatprueba.security.httpFilters.JwtAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -32,7 +35,9 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableCaching
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableRedisHttpSession
 @RequiredArgsConstructor
 public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
     private final UserDetailsService userDetailsService;
@@ -98,9 +103,9 @@ public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcCon
                 .and()
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-                    //.maximumSessions(1)
-                    //.sessionRegistry(sessionRegistry())
-                //.and()
+                    .maximumSessions(1)
+                    .sessionRegistry(sessionRegistry())
+                .and()
                 .and()
                 .authorizeRequests()
                     .antMatchers(HttpMethod.GET, "/chat").permitAll()

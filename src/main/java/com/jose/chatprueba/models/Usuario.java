@@ -2,10 +2,7 @@ package com.jose.chatprueba.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jose.chatprueba.security.UserRole;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,17 +10,19 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Data @NoArgsConstructor @Builder @AllArgsConstructor
+@Getter @Setter
+@NoArgsConstructor @Builder @AllArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name="usuario")
-public class Usuario implements UserDetails {
+public class Usuario implements UserDetails, Serializable {
 
     private static final long serialVersionUID = 131713468529657106L;
 

@@ -5,7 +5,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.Set;
 
-@Data @AllArgsConstructor @NoArgsConstructor @SuperBuilder
+@Data @AllArgsConstructor @NoArgsConstructor @SuperBuilder @ToString(callSuper=true)
 public class GetUsuarioDTO extends UsuarioDTO{
     protected Set<String> roles;
 }

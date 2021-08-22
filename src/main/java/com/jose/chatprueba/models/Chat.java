@@ -3,11 +3,12 @@ package com.jose.chatprueba.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.*;
 
 @Data
 @Entity @Table(name="chat")
-public class Chat {
+public class Chat implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")

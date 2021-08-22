@@ -8,8 +8,11 @@ import com.jose.chatprueba.models.Usuario;
 import com.jose.chatprueba.security.jwt.JwtProvider;
 import com.jose.chatprueba.security.jwt.models.LoginRequest;
 import com.jose.chatprueba.services.ChatServices;
+import com.sun.net.httpserver.HttpPrincipal;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
@@ -42,13 +46,20 @@ public class AuthenticationController {
     private final UsuarioDTOConverter converter;
     @Autowired private SessionRegistry sessionRegistry;
 
+
     @PostMapping("/auth/login")
     public ResponseEntity<GetUsuarioDTOToken> login(
             @Valid @RequestBody LoginRequest loginRequest
-            ,HttpServletResponse response
-            ,HttpServletRequest request
+            , HttpServletResponse response
+            , HttpServletRequest request
+            , HttpPrincipal principal
+            , HttpSession session
             ){
 
+        //TODO: EXCEPCIONES T_T
+        //==========================================//
+
+        //Inicio Autentificación//
         Authentication authentication =
                 authenticationManager
                         .authenticate(
@@ -56,9 +67,24 @@ public class AuthenticationController {
                                         loginRequest.getUsername(),
                                         loginRequest.getPassword()
                                 ));
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
-//        Optional<Cookie> cookie = Arrays.stream(request
+        //==========================================//
+
+
+        //Inicio gestión de sesión//
+        Usuario usuario = (Usuario)authentication.getPrincipal();
+        String token = tokenProvider.generateToken(authentication);
+        GetUsuarioDTOToken usuarioEnviar = converter.convertToDTOWithToken(usuario,token);
+        //System.out.println("AuthenticationController: el contenido de GetUsuarioDTOToken es: \n: "+usuarioEnviar);
+        String sesion = request.getSession().getId();
+        sessionRegistry.registerNewSession(sesion,authentication.getPrincipal());
+        System.out.println("AuthenticationController: Lista de usuarios registrados en sesión: \n"+sessionRegistry.getAllPrincipals());
+        //==========================================//
+
+        //System.out.println("Usuario " + authentication.getName() + " ingresado en sesión");
+
+//GESTION COOKIES
+        //        Optional<Cookie> cookie = Arrays.stream(request
 //                .getCookies())
 //                .filter(x->x.getName().equals("JSESSIONID")).findFirst();
 //        if(cookie.isPresent()) {
@@ -67,28 +93,17 @@ public class AuthenticationController {
 //        }
 //        else{
 //            System.out.println("No se incluye la cookie");
-
 //        }
-        System.out.println(sessionRegistry.getAllPrincipals().toString());
-        //sessionRegistry.registerNewSession("1" , authentication.getPrincipal());
-
-        //System.out.println("Usuario " + authentication.getName() + " ingresado en sesión");
-
-        Usuario usuario = (Usuario)authentication.getPrincipal();
-
-        String token = tokenProvider.generateToken(authentication);
-
 //        System.out.println("AuthenticationController: "+response.getHeader("Set-Cookie"));
 //        String header = response.getHeader("Set-Cookie").concat("; SameSite=none; Secure");
 //        response.setHeader("Set-Cookie", header);
 //        System.out.println("AuthenticationController: "+response.getHeader("Set-Cookie"));
+        System.out.println("AuthenticationController: "+session.getId());
 
-        System.out.println("AuthenticationController:"+request.getSession().getId());
-        sessionRegistry.registerNewSession(request.getSession().getId(),usuario);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(converter.convertToDTOWithToken(usuario,token));
+                .body(usuarioEnviar);
     }
 
 //    @GetMapping("/auth/logout")
@@ -118,7 +133,7 @@ public class AuthenticationController {
             ,HttpServletResponse response
             ,HttpServletRequest request
     ){
-        System.out.println("AuthenticationController.chatsUsuario: "+request.getSession().getId());
+        System.out.println("AuthenticationController.chatsUsuario: Sesión del usuario realizando la petición: "+request.getSession().getId());
         //System.out.println(user.getNombre());
         return chatServices.buscaPorUsuario(user.getId());
     }

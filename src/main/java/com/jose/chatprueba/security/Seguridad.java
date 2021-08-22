@@ -37,7 +37,6 @@ import java.util.Arrays;
 @EnableWebSecurity
 //@EnableCaching
 //@EnableGlobalMethodSecurity(prePostEnabled = true)
-//@EnableRedisHttpSession
 @RequiredArgsConstructor
 public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
     private final UserDetailsService userDetailsService;
@@ -102,10 +101,10 @@ public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcCon
                     .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and()
                 .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-                    .maximumSessions(1)
-                    .sessionRegistry(sessionRegistry())
-                .and()
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    //.maximumSessions(1)
+                    //.sessionRegistry(sessionRegistry())
+                //.and()
                 .and()
                 .authorizeRequests()
                     .antMatchers(HttpMethod.GET, "/chat").permitAll()

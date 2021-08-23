@@ -4,11 +4,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;
 import org.springframework.security.config.annotation.web.socket.AbstractSecurityWebSocketMessageBrokerConfigurer;
 
-//@Configuration
-//public class WebSocketSecurityConfig extends AbstractSecurityWebSocketMessageBrokerConfigurer {
-//
-//    @Override
-//    protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
-//        messages.simpDestMatchers("/app/**").authenticated();
-//    }
-//}
+@Configuration
+public class WebSocketSecurityConfig extends AbstractSecurityWebSocketMessageBrokerConfigurer {
+
+    @Override
+    protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
+        messages
+                .simpDestMatchers("/broker/mensajes/**").authenticated()
+                .anyMessage().authenticated();
+                //.simpSubscribeDestMatchers("/broker/mensajes/**").authenticated();
+
+        //.simpDestMatchers("/app/**").authenticated();
+    }
+}

@@ -74,7 +74,7 @@ public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcCon
                 Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowedHeaders(
                 Arrays.asList(
-                        "Authorization",    
+                        "Authorization",
                         "Cache-Control",
                         "Content-Type",
                         "Access-Control-Allow-Origin",

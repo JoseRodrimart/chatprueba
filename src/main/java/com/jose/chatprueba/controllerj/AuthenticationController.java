@@ -44,7 +44,7 @@ public class AuthenticationController {
     private final ChatServices chatServices;
     private final JwtProvider tokenProvider;
     private final UsuarioDTOConverter converter;
-    @Autowired private SessionRegistry sessionRegistry;
+    //@Autowired private SessionRegistry sessionRegistry;
 
 
     @PostMapping("/auth/login")
@@ -77,8 +77,8 @@ public class AuthenticationController {
         GetUsuarioDTOToken usuarioEnviar = converter.convertToDTOWithToken(usuario,token);
         //System.out.println("AuthenticationController: el contenido de GetUsuarioDTOToken es: \n: "+usuarioEnviar);
         String sesion = request.getSession().getId();
-        sessionRegistry.registerNewSession(sesion,authentication.getPrincipal());
-        System.out.println("AuthenticationController: Lista de usuarios registrados en sesión: \n"+sessionRegistry.getAllPrincipals());
+        //sessionRegistry.registerNewSession(sesion,authentication.getPrincipal());
+        //System.out.println("AuthenticationController: Lista de usuarios registrados en sesión: \n"+sessionRegistry.getAllPrincipals());
         //==========================================//
 
         //System.out.println("Usuario " + authentication.getName() + " ingresado en sesión");
@@ -133,7 +133,7 @@ public class AuthenticationController {
             ,HttpServletResponse response
             ,HttpServletRequest request
     ){
-        System.out.println("AuthenticationController.chatsUsuario: Sesión del usuario realizando la petición: "+request.getSession().getId());
+        System.out.println("AuthenticationController.chatsUsuario: Sesión del usuario realizando la petición de sus chats: "+request.getSession().getId());
         //System.out.println(user.getNombre());
         return chatServices.buscaPorUsuario(user.getId());
     }

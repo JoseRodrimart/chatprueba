@@ -2,6 +2,8 @@ package com.jose.chatprueba.security.jwt;
 
 import com.jose.chatprueba.models.Usuario;
 import com.jose.chatprueba.security.UserRole;
+import com.jose.chatprueba.services.DetallesUsuarioServices;
+import com.jose.chatprueba.services.UsuarioServices;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -9,9 +11,11 @@ import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Log
@@ -21,6 +25,8 @@ public class JwtProvider {
     public static final String TOKEN_PREFIX = "Bearer";
     public static final String TOKEN_TYPE = "JWT";
     private Key key;
+
+    @Autowired private DetallesUsuarioServices detallesUsuarioServices;
 
     @Autowired
     public void setKey(@Value("${jwt.secret}") String jwtSecreto){
@@ -57,8 +63,16 @@ public class JwtProvider {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+        System.out.println(claims.toString());
 
         return Integer.parseInt(claims.getSubject());
+    }
+
+    public UserDetails getUsuarioFromJWT(String token){
+        System.out.println("dentro");
+        Integer id = getUserIdFromJWT(token);
+        System.out.println("JwtProvider.getUsuarioFromJwt: identificado en el token al usuario con id: "+id);
+        return detallesUsuarioServices.loadUsersById(id);
     }
 
     public boolean validateToken(String token){

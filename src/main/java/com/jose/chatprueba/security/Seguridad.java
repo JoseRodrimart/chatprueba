@@ -25,8 +25,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
-import org.springframework.session.FindByIndexNameSessionRepository;
-import org.springframework.session.security.SpringSessionBackedSessionRegistry;
+//import org.springframework.session.FindByIndexNameSessionRepository;
+//import org.springframework.session.security.SpringSessionBackedSessionRegistry;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -37,8 +37,6 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
-//@EnableCaching
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
     private final UserDetailsService userDetailsService;
@@ -103,10 +101,10 @@ public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcCon
                     .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and()
                 .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    .maximumSessions(1)
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                    .maximumSessions(1)
 //                    .sessionRegistry(sessionRegistry())
-                .and()
+//                .and()
                 .and()
                 .authorizeRequests()
                     .antMatchers(HttpMethod.GET, "/chat").permitAll()

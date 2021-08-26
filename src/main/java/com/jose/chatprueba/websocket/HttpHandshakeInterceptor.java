@@ -1,8 +1,11 @@
 package com.jose.chatprueba.websocket;
 
+import com.jose.chatprueba.models.Usuario;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
+import org.springframework.http.server.ServletServerHttpResponse;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
@@ -21,18 +24,20 @@ public class HttpHandshakeInterceptor implements HandshakeInterceptor {
             WebSocketHandler wsHandler,
             Map attributes) throws Exception
     {
-        //System.out.println(request.getHeaders().getConnection());
+//        System.out.println("HttpHandshakeInterceptor:"+request.getPrincipal());
 //        if (request instanceof ServletServerHttpRequest) { //Aquí registro la sesión y no se por qué xd
 //            ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
+//
+//
 //            //System.out.println(servletRequest.getHeaders().toString());
 ////            Arrays.stream(servletRequest.getServletRequest()
 ////                    .getCookies())
 ////                    .forEach(x->System.out.println(x.getName()+": "+x.getValue()));
-//
+//            System.out.println("HttpHandshakeInterceptor:"+request.getHeaders().toString());
 //            HttpSession session = servletRequest.getServletRequest().getSession();
 //            //System.out.println(session.getId());
 //            //System.out.println("HttpHandshakeInterceptor: "+request.getPrincipal().getName());
-//            attributes.put("sessionId", session.getId());
+//            //attributes.put("sessionId", session.getId());
 //        }
         return true;
     }

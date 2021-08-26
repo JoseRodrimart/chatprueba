@@ -9,6 +9,7 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
@@ -39,16 +40,20 @@ public class StompInterceptor implements ChannelInterceptor {
                     + "Se ha suscrito a /conexion");
         }
         System.out.println("StompInterceptor.handleSessionSubscribeEvent: " +
-                "Se ha suscrito el usuario " + event.getUser() + " a " + event.getMessage().getHeaders().get("simpDestination"));
+                "Se ha suscrito el usuario " + event.getUser().getName() + " a " + event.getMessage().getHeaders().get("simpDestination"));
     }
 
-//    @EventListener
-//    public void handleSessionConnectedEvent(SessionConnectedEvent event) {
-////        StompHeaderAccessor headerAccessor = StompHeaderAccessor.create(StompCommand.ERROR);
-////        headerAccessor.setMessage("no perteneces a este chat");
-////        this.clientOutboundChannel.send(MessageBuilder.createMessage(new byte[0], headerAccessor.getMessageHeaders()));
-//        System.out.println("StompInterceptor: "+ event.getMessage().getHeaders().toString());
+    @EventListener
+    public void handleSessionConnectedEvent(SessionConnectedEvent event) {
+        //System.out.println("StompInterceptor.handleSessionConnectedEvent: " +SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+
+        //StompHeaderAccessor headerAccessor = StompHeaderAccessor.create(StompCommand.ERROR);
+
+//        headerAccessor.setMessage("no perteneces a este chat");
+//        this.clientOutboundChannel.send(MessageBuilder.createMessage(new byte[0], headerAccessor.getMessageHeaders()));
+        //System.out.println("StompInterceptor.handleSessionConnectedEvent: "+ event.getMessage().getHeaders().toString());
+        //System.out.println("StompInterceptor.handleSessionConnectedEvent: ");
 //        System.out.println("StompInterceptor.handleSessionConnectedEvent: " +
 //                "Conectado via STOMP el usuario: "+ event.getUser().getName());
-//    }
+    }
 }

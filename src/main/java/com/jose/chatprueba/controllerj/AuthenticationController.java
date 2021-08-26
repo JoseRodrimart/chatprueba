@@ -18,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.simp.user.SimpUser;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,8 +27,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.session.data.redis.RedisSessionRepository;
-import org.springframework.session.web.socket.server.SessionRepositoryMessageInterceptor;
+//import org.springframework.session.data.redis.RedisSessionRepository;
+//import org.springframework.session.web.socket.server.SessionRepositoryMessageInterceptor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -48,8 +50,10 @@ public class AuthenticationController {
     private final JwtProvider tokenProvider;
     private final UsuarioDTOConverter converter;
     //@Autowired RedisSessionRepository sessionRepository; //Registrado en SessionConfig (Posiblemente sin uso).
-
     //@Autowired private SessionRegistry sessionRegistry;
+
+    @Autowired private SimpUserRegistry userRegistry; //MUY MUY TEMPORAL, ELIMINAR
+
 
 
     @PostMapping("/auth/login")
@@ -143,6 +147,13 @@ public class AuthenticationController {
         System.out.println("AuthenticationController.chatsUsuario: Nombre del usuario realizando la petición de sus chats: "+request.getUserPrincipal().getName());
         System.out.println("AuthenticationController.chatsUsuario: Lista completa de usuarios con sesión abierta: NI PUTA IDEA DE COMO SACARLO !>_>! ");
         //System.out.println(user.getNombre());
+        //CAHPUZA PARA VER CON ESTE METODO LOS USUARIOS CONECTADOS POR WEBSOCKET
+        System.out.println("AuthenticationController.chatsUsuario: Usuarios actualmente conectados a websocket: "+userRegistry.getUserCount());
+        System.out.println("Lista de usuarios conectados actualmente:");
+        for (SimpUser userRegistryUser : userRegistry.getUsers()) {
+            System.out.println(userRegistryUser.getName());
+        }
+
         return chatServices.buscaPorUsuario(user.getId());
     }
 

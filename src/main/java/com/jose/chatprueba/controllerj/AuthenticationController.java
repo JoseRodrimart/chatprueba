@@ -12,6 +12,7 @@ import com.sun.net.httpserver.HttpPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.session.data.redis.RedisSessionRepository;
+import org.springframework.session.web.socket.server.SessionRepositoryMessageInterceptor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -44,6 +47,8 @@ public class AuthenticationController {
     private final ChatServices chatServices;
     private final JwtProvider tokenProvider;
     private final UsuarioDTOConverter converter;
+    //@Autowired RedisSessionRepository sessionRepository; //Registrado en SessionConfig (Posiblemente sin uso).
+
     //@Autowired private SessionRegistry sessionRegistry;
 
 
@@ -76,7 +81,7 @@ public class AuthenticationController {
         String token = tokenProvider.generateToken(authentication);
         GetUsuarioDTOToken usuarioEnviar = converter.convertToDTOWithToken(usuario,token);
         //System.out.println("AuthenticationController: el contenido de GetUsuarioDTOToken es: \n: "+usuarioEnviar);
-        String sesion = request.getSession().getId();
+        //String sesion = request.getSession().getId();
         //sessionRegistry.registerNewSession(sesion,authentication.getPrincipal());
         //System.out.println("AuthenticationController: Lista de usuarios registrados en sesión: \n"+sessionRegistry.getAllPrincipals());
         //==========================================//
@@ -98,8 +103,9 @@ public class AuthenticationController {
 //        String header = response.getHeader("Set-Cookie").concat("; SameSite=none; Secure");
 //        response.setHeader("Set-Cookie", header);
 //        System.out.println("AuthenticationController: "+response.getHeader("Set-Cookie"));
-        System.out.println("AuthenticationController: "+session.getId());
 
+        System.out.println("AuthenticationController: "+authentication.getPrincipal());
+        System.out.println("AuthenticationController: "+session.getId());
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -134,6 +140,7 @@ public class AuthenticationController {
             ,HttpServletRequest request
     ){
         System.out.println("AuthenticationController.chatsUsuario: Sesión del usuario realizando la petición de sus chats: "+request.getSession().getId());
+        System.out.println("AuthenticationController.chatsUsuario: Lista completa de usuarios con sesión abierta: NI PUTA IDEA DE COMO SACARLO !>_>! ");
         //System.out.println(user.getNombre());
         return chatServices.buscaPorUsuario(user.getId());
     }

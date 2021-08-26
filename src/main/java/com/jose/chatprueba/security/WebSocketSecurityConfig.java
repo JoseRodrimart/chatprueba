@@ -10,10 +10,24 @@ public class WebSocketSecurityConfig extends AbstractSecurityWebSocketMessageBro
     @Override
     protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
         messages
-                .simpDestMatchers("/broker/mensajes/**").authenticated()
-                .anyMessage().authenticated();
-                //.simpSubscribeDestMatchers("/broker/mensajes/**").authenticated();
+                .simpSubscribeDestMatchers("/**")
+                .permitAll()
+//                .authenticated()
+                .simpDestMatchers("/**")
+//                .permitAll()
+                .authenticated()
+                .simpDestMatchers("/broker/**")
+//                .permitAll()
+                .authenticated()
+                //.anyMessage().authenticated();
+                //.simpSubscribeDestMatchers("/broker/mensajes/**").authenticated()
+                ;
 
         //.simpDestMatchers("/app/**").authenticated();
+    }
+
+    @Override
+    protected boolean sameOriginDisabled() {
+        return true;
     }
 }

@@ -45,12 +45,12 @@ public class webSocketConfig extends AbstractSessionWebSocketMessageBrokerConfig
     @EventListener
     public void onSocketConnected(SessionConnectedEvent event) {
         StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
-        System.out.println("webSocketConfig: [Connected] " + sha.getUser());
+        System.out.println("webSocketConfig: [Connected] " + sha.getUser().getName() +": "+ sha.getSessionId());
     }
 
     @EventListener
     public void onSocketDisconnected(SessionDisconnectEvent event) {
         StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
-        System.out.println("webSocketConfig: [Disconnected] " + sha.getUser());
+        System.out.println("webSocketConfig: [Disconnected] " + sha.getUser().getName() +": "+ sha.getSessionId());
     }
 }

@@ -33,17 +33,22 @@ public class StompInterceptor implements ChannelInterceptor {
     @EventListener
     public void handleSessionSubscribeEvent(SessionSubscribeEvent event) {
         //System.out.println("StompIntercpetor.handleSessionSubscribeEvent: "+event.getMessage().getHeaders().toString());
+        if(event.getMessage().getHeaders().get("simpDestination").equals("/conexion")){
+            System.out.println("StompIntercpetor.handleSessionSubscribeEvent: "
+                    + event.getUser().toString()
+                    + "Se ha suscrito a /conexion");
+        }
         System.out.println("StompInterceptor.handleSessionSubscribeEvent: " +
                 "Se ha suscrito el usuario " + event.getUser() + " a " + event.getMessage().getHeaders().get("simpDestination"));
     }
 
-    @EventListener
-    public void handleSessionConnectedEvent(SessionConnectedEvent event) {
-//        StompHeaderAccessor headerAccessor = StompHeaderAccessor.create(StompCommand.ERROR);
-//        headerAccessor.setMessage("no perteneces a este chat");
-//        this.clientOutboundChannel.send(MessageBuilder.createMessage(new byte[0], headerAccessor.getMessageHeaders()));
-        System.out.println("StompInterceptor: "+ event.getMessage().getHeaders().toString());
-        System.out.println("StompInterceptor.handleSessionConnectedEvent: " +
-                "Conectado el usuario: "+ event.getUser());
-    }
+//    @EventListener
+//    public void handleSessionConnectedEvent(SessionConnectedEvent event) {
+////        StompHeaderAccessor headerAccessor = StompHeaderAccessor.create(StompCommand.ERROR);
+////        headerAccessor.setMessage("no perteneces a este chat");
+////        this.clientOutboundChannel.send(MessageBuilder.createMessage(new byte[0], headerAccessor.getMessageHeaders()));
+//        System.out.println("StompInterceptor: "+ event.getMessage().getHeaders().toString());
+//        System.out.println("StompInterceptor.handleSessionConnectedEvent: " +
+//                "Conectado via STOMP el usuario: "+ event.getUser().getName());
+//    }
 }

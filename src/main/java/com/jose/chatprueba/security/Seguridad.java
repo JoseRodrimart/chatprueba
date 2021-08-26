@@ -25,6 +25,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
+import org.springframework.session.FindByIndexNameSessionRepository;
+import org.springframework.session.security.SpringSessionBackedSessionRegistry;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -46,10 +48,10 @@ public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcCon
     @Lazy
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
 
-    @Bean
-    public SessionRegistry sessionRegistry() {
-        return new SessionRegistryImpl();
-    }
+//    @Bean
+//    public SessionRegistry sessionRegistry() {
+//        return new SessionRegistryImpl();
+//    }
 
     @Bean
     public ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
@@ -102,9 +104,9 @@ public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcCon
                 .and()
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    //.maximumSessions(1)
-                    //.sessionRegistry(sessionRegistry())
-                //.and()
+//                    .maximumSessions(1)
+//                    .sessionRegistry(sessionRegistry())
+//                .and()
                 .and()
                 .authorizeRequests()
                     .antMatchers(HttpMethod.GET, "/chat").permitAll()
@@ -119,4 +121,5 @@ public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcCon
                 .and()
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
     }
+
 }

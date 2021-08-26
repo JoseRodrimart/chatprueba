@@ -140,6 +140,7 @@ public class AuthenticationController {
             ,HttpServletRequest request
     ){
         System.out.println("AuthenticationController.chatsUsuario: Sesión del usuario realizando la petición de sus chats: "+request.getSession().getId());
+        System.out.println("AuthenticationController.chatsUsuario: Nombre del usuario realizando la petición de sus chats: "+request.getUserPrincipal().getName());
         System.out.println("AuthenticationController.chatsUsuario: Lista completa de usuarios con sesión abierta: NI PUTA IDEA DE COMO SACARLO !>_>! ");
         //System.out.println(user.getNombre());
         return chatServices.buscaPorUsuario(user.getId());

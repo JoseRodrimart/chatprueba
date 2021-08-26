@@ -32,7 +32,7 @@ public class StompInterceptor implements ChannelInterceptor {
 
     @EventListener
     public void handleSessionSubscribeEvent(SessionSubscribeEvent event) {
-        //System.out.println("StompIntercpetor.handleSessionSubscribeEvent: "+event.getMessage().getHeaders().toString());
+        System.out.println("StompIntercpetor.handleSessionSubscribeEvent: "+event.getMessage().getHeaders().toString());
         if(event.getMessage().getHeaders().get("simpDestination").equals("/conexion")){
             System.out.println("StompIntercpetor.handleSessionSubscribeEvent: "
                     + event.getUser().toString()

@@ -1,7 +1,7 @@
 package com.jose.chatprueba.controllerj;
 
 import com.jose.chatprueba.models.MensajeSimple;
-import com.jose.chatprueba.websocket.UsuariosActivos;
+//import com.jose.chatprueba.websocket.UsuariosActivos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -14,8 +14,8 @@ import java.util.List;
 @Controller
 public class WebSocketController {
 
-    @Autowired
-    UsuariosActivos usuariosActivos;
+//    @Autowired
+//    UsuariosActivos usuariosActivos;
 
     @MessageMapping("/grupos")
     @SendTo("/broker/mensajes")
@@ -31,6 +31,6 @@ public class WebSocketController {
         return mensaje;
     }
 
-    @SubscribeMapping("/usuariosActivos")
-    public List<Integer> usuariosActivos(){return usuariosActivos.getUsuariosActivos();}
+//    @SubscribeMapping("/usuariosActivos")
+//    public List<Integer> usuariosActivos(){return usuariosActivos.getUsuariosActivos();}
 }

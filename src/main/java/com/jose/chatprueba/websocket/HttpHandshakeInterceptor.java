@@ -22,18 +22,18 @@ public class HttpHandshakeInterceptor implements HandshakeInterceptor {
             Map attributes) throws Exception
     {
         //System.out.println(request.getHeaders().getConnection());
-        if (request instanceof ServletServerHttpRequest) { //Aquí registro la sesión y no se por qué xd
-            ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
-            //System.out.println(servletRequest.getHeaders().toString());
-//            Arrays.stream(servletRequest.getServletRequest()
-//                    .getCookies())
-//                    .forEach(x->System.out.println(x.getName()+": "+x.getValue()));
-
-            HttpSession session = servletRequest.getServletRequest().getSession();
-            //System.out.println(session.getId());
-            //System.out.println("HttpHandshakeInterceptor: "+request.getPrincipal().getName());
-            attributes.put("sessionId", session.getId());
-        }
+//        if (request instanceof ServletServerHttpRequest) { //Aquí registro la sesión y no se por qué xd
+//            ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
+//            //System.out.println(servletRequest.getHeaders().toString());
+////            Arrays.stream(servletRequest.getServletRequest()
+////                    .getCookies())
+////                    .forEach(x->System.out.println(x.getName()+": "+x.getValue()));
+//
+//            HttpSession session = servletRequest.getServletRequest().getSession();
+//            //System.out.println(session.getId());
+//            //System.out.println("HttpHandshakeInterceptor: "+request.getPrincipal().getName());
+//            attributes.put("sessionId", session.getId());
+//        }
         return true;
     }
 

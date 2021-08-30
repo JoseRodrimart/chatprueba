@@ -71,42 +71,42 @@ public class webSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     //Autorización de entrada
 
-    @Override
-    public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(new ChannelInterceptor() {
-            @Override
-            public Message<?> preSend(Message<?> message, MessageChannel channel) {
-                StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-                if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-                    System.out.println("configureClientInboundChannel:usuario conectando...");
-
-                    Optional<String> token = Optional.ofNullable(accessor.getFirstNativeHeader("Authorization"));
-                    if (token.isPresent()) {
-
-                        System.out.println("extraido token: "+token.get());
-                        String jwt = token.get().substring(JwtProvider.TOKEN_PREFIX.length());;
-
-                        if(tokenProvider.validateToken(jwt)) {
-
-                            System.out.println("token validado");
-
-                            Usuario usuario = (Usuario)tokenProvider.getUsuarioFromJWT(jwt);
-
-                            UsernamePasswordAuthenticationToken authenticationToken =
-                                    new UsernamePasswordAuthenticationToken(usuario,usuario.getRoles(), usuario.getAuthorities());
-
-                            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-
-                            System.out.println("introduciendo en la autentificación del canal stomp al usuario: "+usuario.getUsername());
-
-                            accessor.setUser(authenticationToken);
-                        }
-                    }
-                }
-                return message;
-            }
-        });
-    }
+//    @Override
+//    public void configureClientInboundChannel(ChannelRegistration registration) {
+//        registration.interceptors(new ChannelInterceptor() {
+//            @Override
+//            public Message<?> preSend(Message<?> message, MessageChannel channel) {
+//                StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+//                if (StompCommand.CONNECT.equals(accessor.getCommand())) {
+//                    System.out.println("configureClientInboundChannel:usuario conectando...");
+//
+//                    Optional<String> token = Optional.ofNullable(accessor.getFirstNativeHeader("Authorization"));
+//                    if (token.isPresent()) {
+//
+//                        System.out.println("extraido token: "+token.get());
+//                        String jwt = token.get().substring(JwtProvider.TOKEN_PREFIX.length());;
+//
+//                        if(tokenProvider.validateToken(jwt)) {
+//
+//                            System.out.println("token validado");
+//
+//                            Usuario usuario = (Usuario)tokenProvider.getUsuarioFromJWT(jwt);
+//
+//                            UsernamePasswordAuthenticationToken authenticationToken =
+//                                    new UsernamePasswordAuthenticationToken(usuario,usuario.getRoles(), usuario.getAuthorities());
+//
+//                            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+//
+//                            System.out.println("introduciendo en la autentificación del canal stomp al usuario: "+usuario.getUsername());
+//
+//                            accessor.setUser(authenticationToken);
+//                        }
+//                    }
+//                }
+//                return message;
+//            }
+//        });
+//    }
 
     //EventListeners
     @EventListener

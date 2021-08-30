@@ -17,12 +17,12 @@ public class WebSocketController {
 //    @Autowired
 //    UsuariosActivos usuariosActivos;
 
-    @MessageMapping("/grupos")
-    @SendTo("/broker/mensajes")
-    public String enviaMensaje(String mensaje){
-        System.out.println("Mensaje recibido: "+ mensaje);
-        return mensaje;
-    }
+//    @MessageMapping("/grupos")
+//    @SendTo("/broker/mensajes")
+//    public String enviaMensaje(String mensaje){
+//        System.out.println("Mensaje recibido: "+ mensaje);
+//        return mensaje;
+//    }
 
     @MessageMapping("/grupos/{grupoID}")
     @SendTo("/broker/mensajes/{grupoID}")

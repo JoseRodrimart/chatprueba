@@ -93,6 +93,15 @@ public class AuthenticationController {
         //System.out.println("Usuario " + authentication.getName() + " ingresado en sesión");
 
 //GESTION COOKIES
+        System.out.println("AuthenticationController: el contenido del token es: "+token);
+        String tokenEnvio = "Bearer" + token;
+        Cookie cookieJWT = new Cookie("Authentication", tokenEnvio);
+        cookieJWT.setMaxAge(7 * 24 * 60 * 60); // expires in 7 days
+        //cookieJWT.setSecure(true);
+        cookieJWT.setHttpOnly(true);
+        cookieJWT.setPath("/"); // global cookie accessible every where
+        response.addCookie(cookieJWT);
+
         //        Optional<Cookie> cookie = Arrays.stream(request
 //                .getCookies())
 //                .filter(x->x.getName().equals("JSESSIONID")).findFirst();

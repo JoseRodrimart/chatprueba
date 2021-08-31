@@ -95,7 +95,7 @@ public class AuthenticationController {
 //GESTION COOKIES
         System.out.println("AuthenticationController: el contenido del token es: "+token);
         String tokenEnvio = "Bearer" + token;
-        Cookie cookieJWT = new Cookie("Authentication", tokenEnvio);
+        Cookie cookieJWT = new Cookie("Authorization", tokenEnvio);
         cookieJWT.setMaxAge(7 * 24 * 60 * 60); // expires in 7 days
         //cookieJWT.setSecure(true);
         cookieJWT.setHttpOnly(true);

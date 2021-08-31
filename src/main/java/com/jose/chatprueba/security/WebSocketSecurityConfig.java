@@ -11,15 +11,15 @@ public class WebSocketSecurityConfig extends AbstractSecurityWebSocketMessageBro
     protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
         messages
                 .simpSubscribeDestMatchers("/**")
-                .permitAll()
-//                .authenticated()
+//                .permitAll()
+                .authenticated()
                 .simpDestMatchers("/**")
 //                .permitAll()
                 .authenticated()
                 .simpDestMatchers("/broker/**")
 //                .permitAll()
                 .authenticated()
-                //.anyMessage().authenticated();
+                .anyMessage().authenticated();
                 //.simpSubscribeDestMatchers("/broker/mensajes/**").authenticated()
                 ;
 

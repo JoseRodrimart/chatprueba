@@ -5,7 +5,6 @@ import com.jose.chatprueba.security.jwt.JwtProvider;
 import com.jose.chatprueba.services.DetallesUsuarioServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
@@ -15,9 +14,16 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -53,9 +59,28 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     private String getJwtFromRequest(HttpServletRequest request){
-        String bearerToken = request.getHeader(JwtProvider.TOKEN_HEADER);
+        //String bearerToken = request.getHeader(JwtProvider.TOKEN_HEADER);
+        StringBuffer bearerToken = new StringBuffer();
+        Arrays.stream(request.getCookies())
+            .filter(x->JwtProvider.TOKEN_HEADER.equals(x.getName()))
+                //.filter(Cookie::isHttpOnly)
+            .map(Cookie::getValue)
+            .findFirst()
+            .ifPresent(bearerToken::append);
 
-        if(StringUtils.hasText( bearerToken) && bearerToken.startsWith(JwtProvider.TOKEN_PREFIX))
+//        List<Cookie> cookies = Arrays.stream(request.getCookies())
+//            .filter(x->JwtProvider.TOKEN_HEADER.equals(x.getName()))
+//            .collect(Collectors.toList());
+//        cookies.forEach(cookie -> {
+//            System.out.println(cookie.isHttpOnly());
+//            if(cookie.isHttpOnly()){
+//                bearerToken.append(cookie.getValue());
+//            }
+//        });
+
+        System.out.println("JwtAuthorizationFilter: "+ bearerToken);
+
+        if(StringUtils.hasText(bearerToken) && bearerToken.toString().startsWith(JwtProvider.TOKEN_PREFIX))
             return bearerToken.substring(JwtProvider.TOKEN_PREFIX.length());
         else
             return null;

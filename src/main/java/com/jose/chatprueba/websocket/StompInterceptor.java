@@ -22,9 +22,9 @@ import java.util.Objects;
 @Service
 public class StompInterceptor implements ChannelInterceptor {
 
-    @Autowired
-    @Qualifier("clientOutboundChannel")
-    private MessageChannel clientOutboundChannel;
+//    @Autowired
+//    @Qualifier("clientOutboundChannel")
+//    private MessageChannel clientOutboundChannel;
 
     @Override
     public Message<?> preSend(

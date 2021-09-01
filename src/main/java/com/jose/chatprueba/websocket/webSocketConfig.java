@@ -2,7 +2,7 @@ package com.jose.chatprueba.websocket;
 
 import com.jose.chatprueba.models.Usuario;
 import com.jose.chatprueba.security.jwt.JwtProvider;
-import com.jose.chatprueba.services.DetallesUsuarioServices;
+import com.jose.chatprueba.services.UsuarioServices;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
@@ -47,8 +47,6 @@ public class webSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Autowired
     JwtProvider tokenProvider;
     @Autowired HttpHandshakeInterceptor httpHandshakeInterceptor;
-    @Autowired
-    DetallesUsuarioServices detallesUsuarioServices;
 
     //Configuracion Global Websockets
     @Override

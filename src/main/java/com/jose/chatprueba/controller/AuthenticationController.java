@@ -64,12 +64,9 @@ public class AuthenticationController {
         UsernamePasswordAuthenticationToken tokenUsuarioPass =
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword());
 
-        System.out.println("0");
-
         Authentication authentication =
                 authenticationManager.authenticate(tokenUsuarioPass);
 
-        System.out.println("1");
         SecurityContextHolder.getContext().setAuthentication(authentication); //asignamos la autentificación al contexto
         //==========================================//
 
@@ -96,7 +93,6 @@ public class AuthenticationController {
         cookieJWT.setHttpOnly(true);
         cookieJWT.setPath("/"); // global cookie accessible every where
         response.addCookie(cookieJWT);
-        System.out.println("2");
         //        Optional<Cookie> cookie = Arrays.stream(request
 //                .getCookies())
 //                .filter(x->x.getName().equals("JSESSIONID")).findFirst();
@@ -114,7 +110,6 @@ public class AuthenticationController {
 
         System.out.println("AuthenticationController: "+authentication.getPrincipal());
         System.out.println("AuthenticationController: "+session.getId());
-        System.out.println("3");
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(usuarioEnviar);

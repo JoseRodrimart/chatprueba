@@ -2,7 +2,7 @@ package com.jose.chatprueba.security.jwt;
 
 import com.jose.chatprueba.models.Usuario;
 import com.jose.chatprueba.security.UserRole;
-import com.jose.chatprueba.services.DetallesUsuarioServices;
+import com.jose.chatprueba.services.UsuarioServices;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -40,7 +40,7 @@ public class JwtProvider {
     private int jwtDurationTokenEnSegundos;
     private Key key;
 
-    private DetallesUsuarioServices detallesUsuarioServices;
+    private final UsuarioServices detallesUsuarioServices;
 
     @Autowired
     private void setKey(@Value("${jwt.secret}") String jwtSecreto){
@@ -98,7 +98,7 @@ public class JwtProvider {
      */
     public UserDetails getUsuarioFromJWT(String token){
         Integer id = getUserIdFromJWT(token);
-        return detallesUsuarioServices.loadUsersById(id);
+        return detallesUsuarioServices.buscaPorId(id).get();
     }
 
     /**

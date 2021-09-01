@@ -2,8 +2,8 @@ package com.jose.chatprueba.security.httpFilters;
 
 import com.jose.chatprueba.models.Usuario;
 import com.jose.chatprueba.security.jwt.JwtProvider;
-import com.jose.chatprueba.services.DetallesUsuarioServices;
 
+import com.jose.chatprueba.services.UsuarioServices;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,7 +29,6 @@ import java.util.Optional;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
-    private final DetallesUsuarioServices detallesUsuarioServices;
 
     //Falta hacer una gestión manual de la excepción de Token no encontrado
     @Override
@@ -50,7 +49,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 System.err.println("No se ha podido establecer la autentificación del ususario");
             }
         }
-        System.out.println("hola");
         filterChain.doFilter(request, response);
     }
 

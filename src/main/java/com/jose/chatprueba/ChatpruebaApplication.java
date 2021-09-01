@@ -27,24 +27,4 @@ public class ChatpruebaApplication {
     public static void main(String[] args) {
         SpringApplication.run(ChatpruebaApplication.class, args);
     }
-
-//    //Ejecución del main
-//    @PersistenceContext
-//    EntityManager entityManager;
-//    @Autowired
-//    UsuarioServices usuarioServices;
-//    @Autowired
-//    ChatServices chatServices;
-//    @Autowired
-//    MensajeServices mensajeServices;
-//    @Autowired
-//    IFicheroServices ficheroService;
-//
-//    @Bean
-//    public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
-//        return args -> {
-//            System.out.println();
-//            ficheroService.init();
-//        };
-//    }
 }

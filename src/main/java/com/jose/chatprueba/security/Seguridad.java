@@ -1,6 +1,7 @@
 package com.jose.chatprueba.security;
 
 import com.jose.chatprueba.security.httpFilters.JwtAuthorizationFilter;
+import com.jose.chatprueba.services.UsuarioServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -12,8 +13,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -29,21 +28,10 @@ import java.util.Arrays;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
-    private final UserDetailsService userDetailsService;
+    private final UsuarioServices userDetailsService;
     private final AuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final PasswordEncoder passwordEncoder;
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
-
-//    @Bean
-//    public ModelMapper modelMapper(){
-//        return new ModelMapper();
-//    }
-
-    @Bean
-    protected PasswordEncoder passwordEncoder() {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        return encoder;
-    }
 
     @Bean
     protected ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
@@ -81,7 +69,7 @@ public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcCon
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(this.passwordEncoder());
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
 
     @Override

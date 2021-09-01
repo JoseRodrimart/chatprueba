@@ -21,36 +21,30 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @SpringBootApplication
-@EnableJpaRepositories
+//@EnableJpaRepositories
 @EnableJpaAuditing
 public class ChatpruebaApplication {
     public static void main(String[] args) {
         SpringApplication.run(ChatpruebaApplication.class, args);
     }
 
-    @Bean
-    public ModelMapper modelMapper(){
-        return new ModelMapper();
-    }
-
-
-    //Ejecución del main
-    @PersistenceContext
-    EntityManager entityManager;
-    @Autowired
-    UsuarioServices usuarioServices;
-    @Autowired
-    ChatServices chatServices;
-    @Autowired
-    MensajeServices mensajeServices;
-    @Autowired
-    IFicheroServices ficheroService;
-
-    @Bean
-    public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
-        return args -> {
-            System.out.println();
-            ficheroService.init();
-        };
-    }
+//    //Ejecución del main
+//    @PersistenceContext
+//    EntityManager entityManager;
+//    @Autowired
+//    UsuarioServices usuarioServices;
+//    @Autowired
+//    ChatServices chatServices;
+//    @Autowired
+//    MensajeServices mensajeServices;
+//    @Autowired
+//    IFicheroServices ficheroService;
+//
+//    @Bean
+//    public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
+//        return args -> {
+//            System.out.println();
+//            ficheroService.init();
+//        };
+//    }
 }

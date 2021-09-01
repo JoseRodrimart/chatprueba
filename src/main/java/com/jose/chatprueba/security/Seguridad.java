@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -32,8 +31,13 @@ import java.util.Arrays;
 public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
     private final UserDetailsService userDetailsService;
     private final AuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    //private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
+
+//    @Bean
+//    public ModelMapper modelMapper(){
+//        return new ModelMapper();
+//    }
 
     @Bean
     protected PasswordEncoder passwordEncoder() {

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class UsuarioDTOConverter {
-    private final ModelMapper modelMapper;
+    //private final ModelMapper modelMapper;
 
     public GetUsuarioDTO convertToDTO(Usuario usuario){
         return GetUsuarioDTO.builder()

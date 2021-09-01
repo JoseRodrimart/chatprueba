@@ -8,6 +8,8 @@ import com.jose.chatprueba.exceptions.UsuarioNotFoundException;
 import com.jose.chatprueba.models.Usuario;
 import com.jose.chatprueba.repositories.UsuarioRepository;
 import com.jose.chatprueba.security.UserRole;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -29,9 +31,9 @@ import java.util.stream.Stream;
 @Transactional
 @RequiredArgsConstructor
 public class UsuarioServices implements IServices<Usuario>, IUsuarioServices{
-    UsuarioRepository usuarioRepository;
-    UsuarioDTOConverter usuarioDTOConverter;
-    PasswordEncoder passwordEncoder;
+    private final UsuarioRepository usuarioRepository;
+    private final UsuarioDTOConverter usuarioDTOConverter;
+    private final PasswordEncoder passwordEncoder;
 
     //Metodos comunes de los servicios
     @Override

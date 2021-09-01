@@ -3,10 +3,10 @@ package com.jose.chatprueba.security.jwt;
 import com.jose.chatprueba.models.Usuario;
 import com.jose.chatprueba.security.UserRole;
 import com.jose.chatprueba.services.DetallesUsuarioServices;
-import com.jose.chatprueba.services.UsuarioServices;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,31 +15,47 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Clase encargada de generar, validar y gestionar los token JWT
+ */
 @Log
 @Component
+@RequiredArgsConstructor
 public class JwtProvider {
+    /**
+     * Nombre de la cabecera/cookie donde debe venir el token.
+     */
     public static final String TOKEN_HEADER = "Authorization";
+    /**
+     * Prefijo con el que comienza el token.
+     */
     public static final String TOKEN_PREFIX = "Bearer";
+    /**
+     * Tipo de token.
+     */
     public static final String TOKEN_TYPE = "JWT";
+    @Value("${jwt.token-expiration}")
+    private int jwtDurationTokenEnSegundos;
     private Key key;
 
-    @Autowired private DetallesUsuarioServices detallesUsuarioServices;
+    private DetallesUsuarioServices detallesUsuarioServices;
 
     @Autowired
-    public void setKey(@Value("${jwt.secret}") String jwtSecreto){
+    private void setKey(@Value("${jwt.secret}") String jwtSecreto){
         this.key = Keys.hmacShaKeyFor(jwtSecreto.getBytes());
     }
 
-
-    @Value("${jwt.token-expiration}")
-    private int jwtDurationTokenEnSegundos;
-
+    /**
+     * Genera un token válido en base a un objeto Authentication
+     *
+     * @param authentication authentication
+     * @return token jwt sin prefijo
+     */
     public String generateToken(Authentication authentication){
         Usuario usuario = (Usuario)authentication.getPrincipal();
-        Date tokenExpirationDate = new Date(System.currentTimeMillis() + (jwtDurationTokenEnSegundos * 1000));
+        Date tokenExpirationDate = new Date(System.currentTimeMillis() + (jwtDurationTokenEnSegundos * 1000L));
         return Jwts.builder()
                 .signWith(key)
                 .setHeaderParam("typ",TOKEN_TYPE)
@@ -56,25 +72,41 @@ public class JwtProvider {
                 .compact();
     }
 
+    /**
+     * Extrae la id del usuario propietario del token.
+     *
+     * @param token token
+     * @return id del usuario
+     */
     public Integer getUserIdFromJWT(String token){
+        validateToken(token);
         Claims claims = Jwts
                 .parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-        System.out.println(claims.toString());
 
         return Integer.parseInt(claims.getSubject());
     }
 
+    /**
+     * Extrae el usuario de un token jwt.
+     *
+     * @param token the token
+     * @return the user details
+     */
     public UserDetails getUsuarioFromJWT(String token){
-        System.out.println("dentro");
         Integer id = getUserIdFromJWT(token);
-        System.out.println("JwtProvider.getUsuarioFromJwt: identificado en el token al usuario con id: "+id);
         return detallesUsuarioServices.loadUsersById(id);
     }
 
+    /**
+     * Valida un token, comprobando su firma, caducidad, etc.
+     *
+     * @param token token jwt
+     * @return boolean validez
+     */
     public boolean validateToken(String token){
         try{
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);

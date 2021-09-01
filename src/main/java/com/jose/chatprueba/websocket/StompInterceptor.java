@@ -16,6 +16,9 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
 import java.util.Objects;
 
+/**
+ * <h1>Clase de debugeo</h1> Intercepta las diferentes fases de la conexión stomp.
+ */
 @Service
 public class StompInterceptor implements ChannelInterceptor {
 
@@ -31,6 +34,11 @@ public class StompInterceptor implements ChannelInterceptor {
         return ChannelInterceptor.super.preSend(message, channel);
     }
 
+    /**
+     * Gestiona el evento de suscripción
+     *
+     * @param event evento de suscripción
+     */
     @EventListener
     public void handleSessionSubscribeEvent(SessionSubscribeEvent event) {
         System.out.println("StompIntercpetor.handleSessionSubscribeEvent: "+event.getMessage().getHeaders().toString());
@@ -43,6 +51,11 @@ public class StompInterceptor implements ChannelInterceptor {
                 "Se ha suscrito el usuario " + event.getUser().getName() + " a " + event.getMessage().getHeaders().get("simpDestination"));
     }
 
+    /**
+     * Handle session connected event.
+     *
+     * @param event the event
+     */
     @EventListener
     public void handleSessionConnectedEvent(SessionConnectedEvent event) {
         //System.out.println("StompInterceptor.handleSessionConnectedEvent: " +SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());

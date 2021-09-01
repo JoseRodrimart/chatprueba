@@ -13,7 +13,9 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 import java.util.Map;
-
+/**
+ * <h1>Clase de debugeo</h1> Intercepta el handshake de los websockets.
+ */
 @Component
 public class HttpHandshakeInterceptor implements HandshakeInterceptor {
 

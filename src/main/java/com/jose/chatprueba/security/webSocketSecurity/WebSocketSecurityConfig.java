@@ -1,4 +1,4 @@
-package com.jose.chatprueba.security;
+package com.jose.chatprueba.security.webSocketSecurity;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;
@@ -26,6 +26,7 @@ public class WebSocketSecurityConfig extends AbstractSecurityWebSocketMessageBro
         //.simpDestMatchers("/app/**").authenticated();
     }
 
+    //Configuración del Cors en Websockets
     @Override
     protected boolean sameOriginDisabled() {
         return true;

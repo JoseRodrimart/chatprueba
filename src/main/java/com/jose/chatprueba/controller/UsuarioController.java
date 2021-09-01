@@ -1,4 +1,4 @@
-package com.jose.chatprueba.controllerj;
+package com.jose.chatprueba.controller;
 
 import com.jose.chatprueba.dto.CreateUsuarioDTO;
 import com.jose.chatprueba.dto.GetUsuarioDTO;

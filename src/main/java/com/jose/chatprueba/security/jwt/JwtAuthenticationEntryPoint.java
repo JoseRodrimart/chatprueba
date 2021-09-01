@@ -1,4 +1,4 @@
-package com.jose.chatprueba.security;
+package com.jose.chatprueba.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jose.chatprueba.error.ApiError;

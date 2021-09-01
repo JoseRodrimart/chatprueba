@@ -1,4 +1,4 @@
-package com.jose.chatprueba.controllerj;
+package com.jose.chatprueba.controller;
 
 import com.jose.chatprueba.dto.GetUsuarioDTO;
 import com.jose.chatprueba.dto.GetUsuarioDTOToken;
@@ -10,14 +10,9 @@ import com.jose.chatprueba.security.jwt.models.LoginRequest;
 import com.jose.chatprueba.services.ChatServices;
 import com.sun.net.httpserver.HttpPrincipal;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.server.ServletServerHttpRequest;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.simp.user.SimpUser;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,7 +21,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.session.SessionRegistry;
 //import org.springframework.session.data.redis.RedisSessionRepository;
 //import org.springframework.session.web.socket.server.SessionRepositoryMessageInterceptor;
 import org.springframework.web.bind.annotation.*;
@@ -36,10 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 
 @RestController
 @RequiredArgsConstructor
@@ -54,8 +46,6 @@ public class AuthenticationController {
 
     @Autowired private SimpUserRegistry userRegistry; //MUY MUY TEMPORAL, ELIMINAR
 
-
-
     @PostMapping("/auth/login")
     public ResponseEntity<GetUsuarioDTOToken> login(
             @Valid @RequestBody LoginRequest loginRequest
@@ -67,16 +57,20 @@ public class AuthenticationController {
 
         //TODO: EXCEPCIONES T_T
         //==========================================//
-
+        System.out.println("post login");
+        System.out.println(loginRequest.getUsername());
         //Inicio Autentificación//
+
+        UsernamePasswordAuthenticationToken tokenUsuarioPass =
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword());
+
+        System.out.println("0");
+
         Authentication authentication =
-                authenticationManager
-                        .authenticate(
-                                new UsernamePasswordAuthenticationToken(
-                                        loginRequest.getUsername(),
-                                        loginRequest.getPassword()
-                                ));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+                authenticationManager.authenticate(tokenUsuarioPass);
+
+        System.out.println("1");
+        SecurityContextHolder.getContext().setAuthentication(authentication); //asignamos la autentificación al contexto
         //==========================================//
 
 
@@ -90,6 +84,7 @@ public class AuthenticationController {
         //System.out.println("AuthenticationController: Lista de usuarios registrados en sesión: \n"+sessionRegistry.getAllPrincipals());
         //==========================================//
 
+
         //System.out.println("Usuario " + authentication.getName() + " ingresado en sesión");
 
 //GESTION COOKIES
@@ -101,7 +96,7 @@ public class AuthenticationController {
         cookieJWT.setHttpOnly(true);
         cookieJWT.setPath("/"); // global cookie accessible every where
         response.addCookie(cookieJWT);
-
+        System.out.println("2");
         //        Optional<Cookie> cookie = Arrays.stream(request
 //                .getCookies())
 //                .filter(x->x.getName().equals("JSESSIONID")).findFirst();
@@ -119,7 +114,7 @@ public class AuthenticationController {
 
         System.out.println("AuthenticationController: "+authentication.getPrincipal());
         System.out.println("AuthenticationController: "+session.getId());
-
+        System.out.println("3");
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(usuarioEnviar);

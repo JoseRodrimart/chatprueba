@@ -11,6 +11,7 @@ import com.jose.chatprueba.services.MensajeServices;
 import com.jose.chatprueba.services.UsuarioServices;
 import com.jose.chatprueba.services.IFicheroServices;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +32,10 @@ public class UsuarioController {
     IFicheroServices iFicheroServices;
     UsuarioDTOConverter usuarioDTOConverter;
 
+    @Cacheable("usuarios")
     @GetMapping("/usuario")
     public ResponseEntity<List<GetUsuarioDTO>> usuarios(){
+        System.out.println("Lista de usuarios leida de la base de datos");
         List<GetUsuarioDTO> lista = usuarioServices.buscaTodosDTO();
         if(lista.isEmpty())
             return ResponseEntity.notFound().build();

@@ -36,6 +36,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         if(!request.getRequestURI().equals("/auth/login")){ //Omitimos el filtro cuando el usuario quiere logearse
             try {
                 String token = getJwtFromRequest(request).orElseThrow(() -> new Exception("No se ha encotrado el token jwt"));
+
                 Usuario usuario = (Usuario) jwtProvider.getUsuarioFromJWT(token);
 
                 UsernamePasswordAuthenticationToken authenticationToken =
@@ -58,6 +59,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             //.filter(Cookie::isHttpOnly) //No consigo identificar si la cookie era originalmente de tipo HttpOnly. Ver si es posible
             .map(Cookie::getValue)
             .filter(x->x.startsWith(JwtProvider.TOKEN_PREFIX))
+            .map(x->x.substring(JwtProvider.TOKEN_PREFIX.length()))
             .findFirst();
     }
 }

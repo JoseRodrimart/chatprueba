@@ -21,7 +21,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @SpringBootApplication
-//@EnableJpaRepositories
 @EnableJpaAuditing
 public class ChatpruebaApplication {
     public static void main(String[] args) {

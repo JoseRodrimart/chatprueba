@@ -24,6 +24,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 
+/**
+ * <h1>Clase de configuración de la seguridad</h1>
+ * <p>Gestiona la config. de las conexiones http y del CORS</p>
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -44,7 +48,11 @@ public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcCon
         return super.authenticationManagerBean();
     }
 
-    //Configuracion del CORS
+    /**
+     * <b>Bean de configuración del cors</b>
+     *
+     * @return Configuración del cors
+     */
     @Bean
     CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration configuration = new CorsConfiguration();
@@ -94,6 +102,7 @@ public class Seguridad extends WebSecurityConfigurerAdapter implements WebMvcCon
                     .antMatchers(HttpMethod.DELETE, "/usuario/**").hasRole("ADMIN")
                     .antMatchers(HttpMethod.GET, "/user/**").hasRole("USER")
                     .antMatchers(HttpMethod.GET, "/user/**").authenticated()
+                    .antMatchers( "/tienda","/static/**","/css/**","/assets/**","/js/**").permitAll() //Config provisional web thymeleaf
                     .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);

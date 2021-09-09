@@ -15,6 +15,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,11 +35,12 @@ public class UsuarioController {
     IFicheroServices iFicheroServices;
     UsuarioDTOConverter usuarioDTOConverter;
 
-
+    @PreAuthorize("isAuthenticated()")
     @Cacheable("usuarios")
     @GetMapping("/usuario")
-    public ResponseEntity<List<GetUsuarioDTO>> usuarios(@AuthenticationPrincipal Usuario user){
+    public ResponseEntity<List<GetUsuarioDTO>> usuarios(Authentication auth){
         System.out.println("Lista de usuarios leida de la base de datos");
+        System.out.println(auth.toString());
         //System.out.println(user.getId());
         List<GetUsuarioDTO> lista = usuarioServices.buscaTodosDTO();
         if(lista.isEmpty())

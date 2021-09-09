@@ -5,7 +5,6 @@ import com.jose.chatprueba.dto.GetUsuarioDTOToken;
 import com.jose.chatprueba.models.Usuario;
 import com.jose.chatprueba.security.UserRole;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;

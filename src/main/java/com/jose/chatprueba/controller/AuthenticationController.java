@@ -8,8 +8,11 @@ import com.jose.chatprueba.models.Usuario;
 import com.jose.chatprueba.security.jwt.JwtProvider;
 import com.jose.chatprueba.security.jwt.models.LoginRequest;
 import com.jose.chatprueba.services.ChatServices;
+import com.jose.chatprueba.services.UsuarioServices;
 import com.sun.net.httpserver.HttpPrincipal;
 import lombok.RequiredArgsConstructor;
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +42,7 @@ public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
     private final ChatServices chatServices;
+    private final UsuarioServices usuarioServices;
     private final JwtProvider tokenProvider;
     private final UsuarioDTOConverter converter;
     //@Autowired RedisSessionRepository sessionRepository; //Registrado en SessionConfig (Posiblemente sin uso).
@@ -134,6 +138,14 @@ public class AuthenticationController {
     @GetMapping("/user/me")
     public GetUsuarioDTO me(@AuthenticationPrincipal Usuario user){
         return converter.convertToDTO(user);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/user/meKeycloak")
+    public GetUsuarioDTO meKeycloak(@AuthenticationPrincipal KeycloakPrincipal user){
+        String username = user.getKeycloakSecurityContext().getToken().getPreferredUsername();
+        System.out.println(username);
+        return converter.convertToDTO((Usuario) usuarioServices.loadUserByUsername(username));
     }
 
     @PreAuthorize("isAuthenticated()")
